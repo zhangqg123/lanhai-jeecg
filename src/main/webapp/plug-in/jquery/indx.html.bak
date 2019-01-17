@@ -1,0 +1,23 @@
+<html>
+<head>
+<script type="text/javascript" src="jquery-1.8.3.js"></script>
+<script type="text/javascript">
+var arr1 = [ "one", "two", "three", "four", "five" ];
+$(document).ready(function(){
+  $("button").click(function(){
+	$.each(arr1, function(){
+		alert(this);
+	});
+  });
+});
+</script>
+</head>
+<body>
+<button>输出每个列表项的值</button>
+<ul>
+<li>Coffee</li>
+<li>Milk</li>
+<li>Soda</li>
+</ul>
+</body>
+</html>

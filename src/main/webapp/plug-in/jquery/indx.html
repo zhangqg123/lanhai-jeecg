@@ -1,0 +1,25 @@
+<html>
+<head>
+<script type="text/javascript" src="jquery-1.8.3.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $("button").click(function(){
+
+	var json1={key1:'a',key2:'b',key3:'c'};
+	$.each(json1,function(key,value){  //遍历键值对
+		alert(key+'````'+value);
+	})
+
+  });
+});
+</script>
+</head>
+<body>
+<button>输出每个列表项的值</button>
+<ul>
+<li>Coffee</li>
+<li>Milk</li>
+<li>Soda</li>
+</ul>
+</body>
+</html>
