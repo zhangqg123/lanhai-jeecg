@@ -191,6 +191,7 @@
 						<value>p3/xzkx/index.do?addRecord</value>
 						<value>p3/xzkx/index.do?recordList</value>
 					    <value>p3/xzkx/xzkxController.do?goPage</value>
+					    <value>p3/cms/cmsController.do?goPage</value>
 					    <value>qywxLinksucaiController.do?link</value>
 					    <!-- 签到 -->
 <!-- 					    <value>signin/api/getOpenid.do</value> -->
