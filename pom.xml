@@ -103,7 +103,7 @@
 		<jeecg-p3-biz-chat.version>1.0.5</jeecg-p3-biz-chat.version>
 		<jeecg-p3-biz-mail.version>1.0.0</jeecg-p3-biz-mail.version>
 		<jeecg-p3-biz-zwzx.version>1.0.0</jeecg-p3-biz-zwzx.version>
-		<jeecg-p3-biz-signin.version>1.0.0</jeecg-p3-biz-signin.version>
+<!-- 		<jeecg-p3-biz-signin.version>1.0.0</jeecg-p3-biz-signin.version> -->
 		<jeecg-p3-biz-exam.version>1.0.0</jeecg-p3-biz-exam.version>
 		
 		<!--maven插件变量-->
@@ -713,17 +713,17 @@
 			</exclusions>
 		</dependency>
 		<!-- 插件：签到 -->
-		<dependency>
-			<groupId>org.jeecgframework.p3</groupId>
-			<artifactId>jeecg-p3-biz-signin</artifactId>
-			<version>${jeecg-p3-biz-signin.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.jeecgframework.p3</groupId>
-					<artifactId>jeecg-p3-start-quick</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.jeecgframework.p3</groupId> -->
+<!-- 			<artifactId>jeecg-p3-biz-signin</artifactId> -->
+<!-- 			<version>${jeecg-p3-biz-signin.version}</version> -->
+<!-- 			<exclusions> -->
+<!-- 				<exclusion> -->
+<!-- 					<groupId>org.jeecgframework.p3</groupId> -->
+<!-- 					<artifactId>jeecg-p3-start-quick</artifactId> -->
+<!-- 				</exclusion> -->
+<!-- 			</exclusions> -->
+<!-- 		</dependency> -->
 		<!-- 考试 -->
 		<dependency>
 			<groupId>org.jeecgframework.p3</groupId>
