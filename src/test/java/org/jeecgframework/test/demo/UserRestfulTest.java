@@ -30,7 +30,7 @@ public class UserRestfulTest extends AbstractUnitTest {
 	private RestTemplate template;
 
 	// 测试get单个用户
-	// @Test
+	 @Test
 	public void testGet() throws Exception {
 		TSUser user = template.getForObject("http://localhost:8080/jeecg/rest/user/{id}", TSUser.class, "402880e74d75c4dd014d75d44af30005");
 
@@ -41,7 +41,7 @@ public class UserRestfulTest extends AbstractUnitTest {
 	}
 
 	// 测试get全部用户
-	//@Test
+	@Test
 	public void testGetAll() throws Exception {
 		String str = template.getForObject("http://localhost:8080/jeecg/rest/user", String.class);
 		
@@ -54,7 +54,7 @@ public class UserRestfulTest extends AbstractUnitTest {
 	}
 
 	// 测试create
-	 @Test
+	// @Test
 	public void testCreate() throws Exception {
 		 HttpHeaders headers = new HttpHeaders();
 		//  请勿轻易改变此提交方式，大部分的情况下，提交方式都是表单提交

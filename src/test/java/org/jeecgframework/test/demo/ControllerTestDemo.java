@@ -37,8 +37,8 @@ public class ControllerTestDemo  extends AbstractUnitTest{
 	public void testLogin() throws Exception {
 		session.setAttribute("randCode", "1234"); //设置登录验证码
 		this.mockMvc.perform(post("/loginController.do?checkuser=")
-				.param("userName","admin")
-				.param("password", "c44b01947c9e6e3f")
+				.param("userName","lifei")
+				.param("password", "7ad2f7bf14379274")
 				.param("randCode", "1234")
 				.header("USER-AGENT", "")  // 设置USER-AGENT： 浏览器 
 				.session(session))  //关键 每个测试都要设置session 。以保证是使用的同一个session

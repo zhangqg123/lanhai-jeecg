@@ -1,6 +1,7 @@
 package org.jeecgframework.web.api;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +41,7 @@ import com.jeecg.zwzx.entity.WorkUserEntity;
 import com.jeecg.zwzx.service.WorkBlacklistService;
 import com.jeecg.zwzx.service.WorkGuideService;
 import com.jeecg.zwzx.service.WorkUserService;
+import com.jeecg.zwzx.utils.PasswordUtil;
 
 /**
  * CMS API
@@ -58,6 +61,7 @@ public class ApiSmsController extends BaseController {
 	public @ResponseBody AjaxJson txsms(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		AjaxJson j = new AjaxJson();
     	String phone=request.getParameter("phone");
+    	String usertype=request.getParameter("usertype");
     	if(phone==null){
     		j.setSuccess(false);
     		return j;
@@ -72,6 +76,7 @@ public class ApiSmsController extends BaseController {
      	}
     	WorkUserEntity workUser=new WorkUserEntity();
     	workUser.setPhone(phone);
+    	workUser.setUsertype(usertype);
 		MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
 		List<WorkUserEntity> workUserList = list.getResults();
 		if(workUserList.size()>0){
@@ -139,6 +144,138 @@ public class ApiSmsController extends BaseController {
 	//		} catch (IOException e) {
 	//		    e.printStackTrace();
 			}
+		}
+		return j;
+	}
+	
+	@RequestMapping("/smsCodeLogin")
+	public @ResponseBody AjaxJson smsCodeLogin(HttpServletRequest request, HttpServletResponse response) {
+		AjaxJson j = new AjaxJson();
+    	String phone=request.getParameter("phone");
+    	String userkey=request.getParameter("userkey");
+    	String openid=request.getParameter("openId");
+    	String usertype=request.getParameter("usertype");
+    	WorkUserEntity workUser=new WorkUserEntity();
+		try {
+	    	if(phone!=null&&userkey!=null){
+	        	workUser.setPhone(phone);
+	        	workUser.setUserkey(userkey);
+	        	workUser.setUsertype(usertype);
+				MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
+				List<WorkUserEntity> workUserList = list.getResults();
+				if(workUserList.size()>0){
+					workUser=workUserList.get(0);
+					// 2，短信验证码登录
+					workUser.setStatus(2);
+					workUser.setOpenid(openid);
+					workUserService.update(workUser);
+					j.setObj(workUser.getId());
+					Map<String,Object> attributes=new HashMap<String,Object>();
+					attributes.put("status", 2);
+					j.setAttributes(attributes);
+					j.setSuccess(true);
+				}else{
+					j.setSuccess(false);
+				}
+	    	}else{
+				j.setSuccess(false);	    		
+	    	}
+		} catch (Exception e) {
+			e.printStackTrace();
+			j.setSuccess(false);
+		}
+		return j;
+	}
+	
+	@RequestMapping(value ="/userRegister", method = RequestMethod.POST)
+	public @ResponseBody AjaxJson userRegister(HttpServletRequest request, @RequestBody WorkUserEntity workUser) {
+		AjaxJson j = new AjaxJson();
+		String password = workUser.getPassword();
+		try {
+			workUser=workUserService.get(workUser.getId());
+			Map<String,Object> attributes=new HashMap<String,Object>();
+			workUser.setPassword(PasswordUtil.encrypt(workUser.getUsername(), password, PasswordUtil.getStaticSalt()));
+			workUser.setStatus(3);
+			workUserService.update(workUser);
+			j.setObj(workUser.getId());
+			attributes.put("status", 3);
+			j.setAttributes(attributes);
+			j.setSuccess(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			j.setSuccess(false);
+		}
+		return j;
+	}
+	
+	@RequestMapping("/idCardLogin")
+	public @ResponseBody AjaxJson idCardLogin(HttpServletRequest request, HttpServletResponse response) {
+		//TODO 验证身份证号接口
+		
+		AjaxJson j = new AjaxJson();
+		try {
+    		WorkUserEntity workUser=new WorkUserEntity();
+			String idcard=request.getParameter("idcard");
+			String usertype=request.getParameter("usertype");
+			workUser.setIdcard(idcard);
+			workUser.setUsertype(usertype);
+			MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
+			List<WorkUserEntity> workUserList = list.getResults();
+			if(workUserList.size()>0){
+				j.setSuccess(false);
+				j.setMsg("身份证号已注册");
+				return j;
+			}
+    		String id = request.getHeader("login-code");
+    		workUser.setId(id);
+			String realname= URLDecoder.decode(request.getParameter("realname"),"utf-8");
+			
+			workUser=workUserService.get(workUser.getId());
+			workUser.setRealname(realname);
+			workUser.setIdcard(idcard);
+			// 4，身份证验证通过
+			workUser.setStatus(4);
+			workUserService.update(workUser);
+			j.setObj(workUser.getId());
+			Map<String,Object> attributes=new HashMap<String,Object>();
+			attributes.put("status", 4);
+			j.setAttributes(attributes);
+			j.setSuccess(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			j.setSuccess(false);
+		}
+		return j;
+	}
+	
+	@RequestMapping("/userInfo")
+	public @ResponseBody AjaxJson userInfo(HttpServletRequest request, HttpServletResponse response) {
+		AjaxJson j = new AjaxJson();
+		String id = request.getHeader("login-code");
+		if(id!=null&&id!=""){
+			try {
+	    		System.out.println("id:"+id);
+	    		WorkUserEntity workUser=new WorkUserEntity();
+	    		workUser.setId(id);
+				MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
+				List<WorkUserEntity> workUserList = list.getResults();
+				if(workUserList.size()>0){
+		    		System.out.println("workUserList.size():-----"+workUserList.size());
+					workUser=workUserList.get(0);
+	//				Map<String,Object> attributes=new HashMap<String,Object>();
+	//				attributes.put("status", workUser.getStatus());
+	//				j.setAttributes(attributes);
+					j.setObj(workUser);
+					j.setSuccess(true);
+				}else{
+					j.setSuccess(false);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				j.setSuccess(false);
+			}
+		}else{
+			j.setSuccess(false);
 		}
 		return j;
 	}

@@ -60,7 +60,7 @@ public class JwtRestfulClientDemo {
 	public static void main(String[] args) {
 		String token = getToken("interfaceuser","123456");
 		System.out.println(" token : "+ token);
-//		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJhZG1pbiIsInN1YiI6ImFkbWluIiwiaWF0IjoxNTExODU5NjM2fQ.Emfe8VZKA_L33jaW8ZUtVFVDEin83Np_d3gKlPIZryE";
+//		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJpbnRlcmZhY2V1c2VyIiwic3ViIjoiaW50ZXJmYWNldXNlciIsImlhdCI6MTU0ODU2MzMzNX0.VpvkFd1OlQ5_Rj1_8Mmao4PmmoW_TaivUQfoACyRXxM";
 		
 		//添加黑名单
 //		JSONObject jsonObject=new JSONObject();
@@ -68,15 +68,15 @@ public class JwtRestfulClientDemo {
 //		System.out.println("======添加黑名单======="+createBlackList(token,jsonObject.toJSONString()));
 		//更新黑名单
 //		JSONObject jsonObject=new JSONObject();
-//		jsonObject.put("id","402881ee6001da57016001dc13110001");
+//		jsonObject.put("id","402881e75f91017e015f91023f7c0001");
 //		jsonObject.put("ip","192.168.0.111");
 //		System.out.println("======更新黑名单======="+updateBlackList(token,jsonObject.toJSONString()));
 		//删除黑名单
-//		System.out.println("======删除黑名单======="+deleteBlackList(token,"402881ee6001da57016001dc13110001"));
+//		System.out.println("======删除黑名单======="+deleteBlackList(token,"402881e75f91017e015f91023f7c0001"));
 		//查询黑名单
-//		System.out.println("======查询黑名单======="+getBlackList(token,"402881ee6001e873016001f369f40008"));
+		System.out.println("======查询黑名单======="+getBlackList(token,"402881e75f94a099015f94afe9700003"));
 		//获取黑名单列表
-		System.out.println("======获取黑名单列表======="+getBlackList(token));
+//		System.out.println("======获取黑名单列表======="+getBlackList(token));
 	}
 
 }

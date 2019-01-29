@@ -169,7 +169,11 @@
 			<scope>system</scope>
             <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/ueditor-1.1.2.jar</systemPath>
 		</dependency>
-	
+<dependency>
+    <groupId>com.jayway.jsonpath</groupId>
+    <artifactId>json-path</artifactId>
+    <version>0.8.1</version>
+</dependency>	
 		<!-- SPRING start -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -733,6 +737,10 @@
 				<exclusion>
 					<groupId>org.jeecgframework.p3</groupId>
 					<artifactId>jeecg-p3-start-quick</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>io.springfox</groupId>
+				    <artifactId>springfox-swagger2</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
