@@ -1,4 +1,4 @@
-package org.jeecgframework.web.api;
+package org.jeecgframework.web.api.controller;
 
 import java.util.HashMap;
 import java.util.List;

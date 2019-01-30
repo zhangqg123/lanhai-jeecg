@@ -1,4 +1,4 @@
-package org.jeecgframework.web.api;
+package org.jeecgframework.web.api.controller;
 
 import java.io.IOException;
 import java.net.URLDecoder;
