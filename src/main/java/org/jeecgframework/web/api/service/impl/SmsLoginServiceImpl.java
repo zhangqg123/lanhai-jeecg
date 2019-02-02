@@ -25,7 +25,6 @@ import com.jeecg.zwzx.entity.WorkUserEntity;
 import com.jeecg.zwzx.service.WorkUserService;
 
 @Service("smsLoginService")
-@Transactional
 public class SmsLoginServiceImpl implements SmsLoginService {
 	@Autowired
 	private WorkUserService workUserService;

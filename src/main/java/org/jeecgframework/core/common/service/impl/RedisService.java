@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -16,21 +17,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisService {
 
-    @Resource
-    private StringRedisTemplate redisTemplate;
+	@Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
     *  删除key和value
     */
     public void delete(String key){
-        redisTemplate.delete(key);
+        stringRedisTemplate.delete(key);
     }
 
     /**
     *  根据key获取value
     */
     public String get(String key){
-        String value = redisTemplate.opsForValue().get(key);
+        String value = stringRedisTemplate.opsForValue().get(key);
         return value;
     }
 
@@ -38,21 +39,21 @@ public class RedisService {
     *  将key和value存入redis，并设置有效时间，单位：天
     */
     public void set(String key, String value, long timeout){
-        redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(key, value, timeout, TimeUnit.DAYS);
     }
 
     /**
     *  将key和value存入redis
     */
     public void set(String key, String value){
-        redisTemplate.opsForValue().set(key, value);
+        stringRedisTemplate.opsForValue().set(key, value);
     }
 
     /**
     *  从redis中获取map
     */
     public Map<String, Object> getMap(String key){
-        HashOperations<String, String, Object>  hash = redisTemplate.opsForHash();
+        HashOperations<String, String, Object>  hash = stringRedisTemplate.opsForHash();
         Map<String,Object> map = hash.entries(key);
         return map;
     }
@@ -61,7 +62,7 @@ public class RedisService {
     *  将map存入redis，并设置时效
     */
     public void set(String key, Map<? extends String, ? extends Object> map, long timeout){
-        redisTemplate.opsForHash().putAll(key, map);
-        redisTemplate.expire(key, timeout, TimeUnit.DAYS);
+        stringRedisTemplate.opsForHash().putAll(key, map);
+        stringRedisTemplate.expire(key, timeout, TimeUnit.DAYS);
     }
 }

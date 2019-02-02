@@ -738,10 +738,6 @@
 					<groupId>org.jeecgframework.p3</groupId>
 					<artifactId>jeecg-p3-start-quick</artifactId>
 				</exclusion>
-				<exclusion>
-				    <groupId>io.springfox</groupId>
-				    <artifactId>springfox-swagger2</artifactId>
-				</exclusion>
 			</exclusions>
 		</dependency>
 
