@@ -33,8 +33,6 @@ import com.jeecg.zwzx.service.WorkUserService;
 public class ApiMainExamController extends BaseController {
 	@Autowired
 	private ApiMainExamService apiMainExamService;
-	@Autowired
-	private LhExamService lhExamService;
 
 	@RequestMapping("/uploadFormIds")
 	public @ResponseBody AjaxJson uploadFormIds(HttpServletRequest request, HttpServletResponse response) {
@@ -52,8 +50,8 @@ public class ApiMainExamController extends BaseController {
 		String param = request.getParameter("param");
 		String openId = request.getParameter("openId");
 		String examId = request.getParameter("examId");
-		JSONArray jsonArray = lhExamService.countScore(param,openId,examId);
-//		List<LhQuestionEntity> result = lhQuestionService.questionByExamId(examId);
+		String appId=request.getParameter("xcxId");
+		JSONArray jsonArray =apiMainExamService.reply(param,openId,examId,appId);
 		return JSONArray.toJSONString(jsonArray);
 	}
 
