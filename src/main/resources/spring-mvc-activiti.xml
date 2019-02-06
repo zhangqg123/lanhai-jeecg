@@ -31,9 +31,9 @@
 
 		<property name="customSessionFactories">
 		    <list>
-		      <bean class="org.jeecgframework.web.activiti.util.CustomGroupEntityManagerFactory" >
+		      <bean class="com.jeecg.lanhai.activiti.util.CustomGroupEntityManagerFactory" >
 		        <property name="groupEntityManager">
-		          <bean class="org.jeecgframework.web.activiti.util.CustomGroupEntityManager">
+		          <bean class="com.jeecg.lanhai.activiti.util.CustomGroupEntityManager">
 		          </bean>
 		        </property>
 		      </bean>
