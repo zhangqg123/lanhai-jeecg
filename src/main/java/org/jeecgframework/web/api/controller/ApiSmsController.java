@@ -70,12 +70,13 @@ public class ApiSmsController extends BaseController {
 		AjaxJson j = new AjaxJson();
     	String phone=request.getParameter("phone");
     	String usertype=request.getParameter("usertype");
+    	String status=request.getParameter("status");
     	if(phone==null){
     		j.setSuccess(false);
     		return j;
     	}
 		String appId=request.getParameter("xcxId");
-		String smsResult=smsLoginService.sendSms(appId,phone,usertype);
+		String smsResult=smsLoginService.sendSms(appId,phone,usertype,status);
 		if(smsResult.equals("success")){
 			j.setSuccess(true);
 		}else{
@@ -110,6 +111,39 @@ public class ApiSmsController extends BaseController {
 					Map<String,Object> attributes=new HashMap<String,Object>();
 					attributes.put("status", 2);
 					j.setAttributes(attributes);
+					j.setSuccess(true);
+				}else{
+					j.setSuccess(false);
+				}
+	    	}else{
+				j.setSuccess(false);	    		
+	    	}
+		} catch (Exception e) {
+			e.printStackTrace();
+			j.setSuccess(false);
+		}
+		return j;
+	}
+	@RequestMapping("/follow")
+	public @ResponseBody AjaxJson follow(HttpServletRequest request, HttpServletResponse response) {
+		AjaxJson j = new AjaxJson();
+    	String phone=request.getParameter("phone");
+    	String userkey=request.getParameter("userkey");
+    	String openid=request.getParameter("openId");
+    	String usertype=request.getParameter("usertype");
+    	WorkUserEntity workUser=new WorkUserEntity();
+		try {
+	    	if(phone!=null&&userkey!=null){
+	        	workUser.setPhone(phone);
+	        	workUser.setUserkey(userkey);
+	        	workUser.setUsertype(usertype);
+				MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
+				List<WorkUserEntity> workUserList = list.getResults();
+				if(workUserList.size()>0){
+					workUser=workUserList.get(0);
+					// 2，短信验证码登录
+					workUser.setParent(openid);
+					workUserService.update(workUser);
 					j.setSuccess(true);
 				}else{
 					j.setSuccess(false);

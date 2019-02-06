@@ -34,7 +34,7 @@ public class SmsLoginServiceImpl implements SmsLoginService {
 	private WorkBlacklistDao workBlacklistDao;
 
 	@Override
-	public String sendSms(String appId, String phone, String usertype) {
+	public String sendSms(String appId, String phone, String usertype, String status) {
 		String msg=null;
 		LhSAccountEntity lhSAccount = lhSAccountDao.getByAppId(appId);
     	WorkBlacklistEntity workBlacklist=new WorkBlacklistEntity();
@@ -51,7 +51,7 @@ public class SmsLoginServiceImpl implements SmsLoginService {
 		if(workUserList.size()>0){
 			workUser=workUserList.get(0);
 		}
-		if(workUser.getPassword()!=null){
+		if(status.equals("smsCode")&&workUser.getPassword()!=null){
 			msg= "号码已注册";
 		}else{
 			// 短信应用SDK AppID
@@ -87,15 +87,16 @@ public class SmsLoginServiceImpl implements SmsLoginService {
 	                templateId, params, smsSign, "", "");  // 签名参数未提供或者为空时，会使用默认签名发送短信
 				System.out.println("result:"+result);
 	            if (result.result==0) {
+					if(status.equals("smsCode")){
+		    			workUser.setStatus(1);		// 1,已发送验证码					
+					}
 		    		if(workUser.getId()!=null){
 						workUser.setUserkey(values);
-		    			workUser.setStatus(1);
 						workUserService.update(workUser);
 		    		}else{
 		    			workUser.setUsername(workUser.getPhone());
 		    			workUser.setUserkey(values);
-		    			// 1,已发送验证码
-		    			workUser.setStatus(1);
+		    			
 		    			workUserService.insert(workUser);
 					}
 					msg="success";
