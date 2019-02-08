@@ -301,7 +301,7 @@ public class ApiSmsController extends BaseController {
 	//				Map<String,Object> attributes=new HashMap<String,Object>();
 	//				attributes.put("status", workUser.getStatus());
 	//				j.setAttributes(attributes);
-					j.setObj(workUser.getPhone());
+					j.setObj(workUser);
 					j.setSuccess(true);
 				}else{
 					j.setSuccess(false);
