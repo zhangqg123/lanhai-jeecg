@@ -84,7 +84,7 @@ public class ApiMainExamServiceImpl implements ApiMainExamService {
 
 	@Override
 	@Transactional
-	public JSONArray reply(String param, String openId, String examId,final String appId) {
+	public JSONArray reply(String param, String openId, String examId,final String appId,final String useTime) {
 		Map<String, Object> ret = lhExamService.countScore(param,openId,examId);
 		JSONArray jsonArray=(JSONArray) ret.get("jsonArray");
 		final LhExamScoreEntity lhExamScore=(LhExamScoreEntity) ret.get("lhExamScore");
@@ -93,14 +93,14 @@ public class ApiMainExamServiceImpl implements ApiMainExamService {
 			
 			@Override
 			public void run() {
-			    sendTemplateMessage(lhExamScore,appId);
+			    sendTemplateMessage(lhExamScore,appId,useTime);
 			}
 		});
 //	    sendTemplateMessage(lhExamScore,formId,appId);
 		return jsonArray;
 	}
 	
-	private void sendTemplateMessage(LhExamScoreEntity lhExamScore,String appId) {
+	private void sendTemplateMessage(LhExamScoreEntity lhExamScore,String appId,String useTime) {
 		String openId=lhExamScore.getOpenId();
 		WorkUserEntity workUser=new WorkUserEntity();
 		workUser.setOpenid(openId);
@@ -127,7 +127,7 @@ public class ApiMainExamServiceImpl implements ApiMainExamService {
         map.put("keyword1", new WXTemplateData(String.valueOf(score),"#173177"));
         map.put("keyword2", new WXTemplateData(lhExamScore.getExamId(),"#173177"));
         map.put("keyword3", new WXTemplateData(auditDate,"#173177"));
-        map.put("keyword4", new WXTemplateData(lhExamScore.getNumber().toString(),"#173177"));
+        map.put("keyword4", new WXTemplateData(useTime ,"#173177"));
 		String requestUrl = SEND_URL + "?access_token="+token;
 		
 		if(formId!=null){	

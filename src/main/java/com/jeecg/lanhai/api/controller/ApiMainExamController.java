@@ -1,6 +1,8 @@
 package com.jeecg.lanhai.api.controller;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -50,8 +52,23 @@ public class ApiMainExamController extends BaseController {
 		String param = request.getParameter("param");
 		String openId = request.getParameter("openId");
 		String examId = request.getParameter("examId");
+		String sTime=request.getParameter("startTime");
+		long startTime=Long.valueOf(sTime);
+		long endTime = System.currentTimeMillis();
+		int time=(int) ((endTime-startTime)/1000);
+		String useTime=null;
+		int min=0;
+		int sec=0;
+		if (time>60){
+			min=(int)time/60;
+			sec=time%60;
+			useTime=min+"分"+sec+"秒";
+		}else{
+			sec=time%60;
+			useTime=sec+"秒";
+		}
 		String appId=request.getParameter("xcxId");
-		JSONArray jsonArray =apiMainExamService.reply(param,openId,examId,appId);
+		JSONArray jsonArray =apiMainExamService.reply(param,openId,examId,appId,useTime);
 		return JSONArray.toJSONString(jsonArray);
 	}
 
