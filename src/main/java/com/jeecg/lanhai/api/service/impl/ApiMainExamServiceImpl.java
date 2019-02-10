@@ -51,8 +51,8 @@ public class ApiMainExamServiceImpl implements ApiMainExamService {
 	private ExecutorService executor = Executors.newCachedThreadPool();
 	
 	private static final String SEND_URL = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send";
-    private final String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
-	private String templateId="OZy8F0P10K3RAsgYEy5a_LebF9WjMeLDYF5hbq70YK0";
+//    private final String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
+	private String templateId="weOSnK8qqB532FN31FOn1rmaMCbfbJ0HlNFfApAYHUk";
 
 	public void collect(String openId, List<FormTemplateVO> formTemplates) {
 	    redisTemplate.opsForList().rightPushAll("mina:openid:" + openId, formTemplates);
@@ -83,7 +83,6 @@ public class ApiMainExamServiceImpl implements ApiMainExamService {
 	}
 
 	@Override
-	@Transactional
 	public JSONArray reply(String param, String openId, String examId,final String appId,final String useTime) {
 		Map<String, Object> ret = lhExamService.countScore(param,openId,examId);
 		JSONArray jsonArray=(JSONArray) ret.get("jsonArray");
@@ -124,10 +123,10 @@ public class ApiMainExamServiceImpl implements ApiMainExamService {
     	Integer score = lhExamScore.getScore();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
         String auditDate = sdf.format(new Date());  
-        map.put("keyword1", new WXTemplateData(String.valueOf(score),"#173177"));
-        map.put("keyword2", new WXTemplateData(lhExamScore.getExamId(),"#173177"));
-        map.put("keyword3", new WXTemplateData(auditDate,"#173177"));
-        map.put("keyword4", new WXTemplateData(useTime ,"#173177"));
+        map.put("keyword1", new WXTemplateData(String.valueOf(score)+"分","#173177"));
+        map.put("keyword2", new WXTemplateData(lhExamScore.getExamName(),"#173177"));
+        map.put("keyword3", new WXTemplateData(useTime,"#173177"));
+        map.put("keyword4", new WXTemplateData(auditDate ,"#173177"));
 		String requestUrl = SEND_URL + "?access_token="+token;
 		
 		if(formId!=null){	

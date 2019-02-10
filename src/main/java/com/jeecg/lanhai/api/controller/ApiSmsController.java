@@ -92,6 +92,7 @@ public class ApiSmsController extends BaseController {
     	String phone=request.getParameter("phone");
     	String userkey=request.getParameter("userkey");
     	String openid=request.getParameter("openId");
+    	String xcxId=request.getParameter("xcxId");
     	String usertype=request.getParameter("usertype");
     	WorkUserEntity workUser=new WorkUserEntity();
 		try {
@@ -106,6 +107,7 @@ public class ApiSmsController extends BaseController {
 					// 2，短信验证码登录
 					workUser.setStatus(2);
 					workUser.setOpenid(openid);
+					workUser.setXcxId(xcxId);
 					workUserService.update(workUser);
 					j.setObj(workUser.getId());
 					Map<String,Object> attributes=new HashMap<String,Object>();
