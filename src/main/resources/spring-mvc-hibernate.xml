@@ -109,7 +109,6 @@
 				<value>org.jeecgframework.web.black.*</value>
 				<value>org.jeecgframework.web.linksucai.*</value>
 				<value>org.jeecgframework.web.superquery.*</value>
-				<value>org.jeecgframework.web.activiti.*</value>
 				<value>com.jeecg.*</value>
 			</list>
 		</property>

@@ -16,13 +16,9 @@ import org.jeecgframework.core.util.HttpClientUtil;
 import org.jeecgframework.minidao.pojo.MiniDaoPage;
 import org.jeecgframework.web.linksucai.oauth2.qiye.pojo.AccessToken;
 import org.jeecgframework.web.linksucai.oauth2.qiye.util.WechatAccessToken;
-import org.jeecgframework.web.system.pojo.base.TSNoticeReadUser;
-import org.jeecgframework.web.system.pojo.base.TSRoleUser;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONArray;
 import com.jeecg.account.entity.LhSAccountEntity;
@@ -33,7 +29,6 @@ import com.jeecg.lanhai.activiti.util.WXTemplate;
 import com.jeecg.lanhai.activiti.util.WXTemplateData;
 import com.jeecg.lanhai.api.entity.FormTemplateVO;
 import com.jeecg.lanhai.api.service.ApiMainExamService;
-import com.jeecg.zwzx.entity.WorkApplyEntity;
 import com.jeecg.zwzx.entity.WorkUserEntity;
 import com.jeecg.zwzx.service.WorkUserService;
 
@@ -52,7 +47,7 @@ public class ApiMainExamServiceImpl implements ApiMainExamService {
 	
 	private static final String SEND_URL = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send";
 //    private final String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
-	private String templateId="weOSnK8qqB532FN31FOn1rmaMCbfbJ0HlNFfApAYHUk";
+	private String templateId="weOSnK8qqB532FN31FOn1gKN6Q1e-1OEYJPWhWE4-wY";
 
 	public void collect(String openId, List<FormTemplateVO> formTemplates) {
 	    redisTemplate.opsForList().rightPushAll("mina:openid:" + openId, formTemplates);
