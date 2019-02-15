@@ -674,21 +674,25 @@
 					<groupId>org.jeecgframework.p3</groupId>
 					<artifactId>jeecg-p3-start-quick</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.jeecgframework.p3</groupId>
+					<artifactId>jeecg-p3-biz-lhs</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		
 		<!-- 插件：xzkx -->
-		<dependency>
-			<groupId>org.p3framework</groupId>
-			<artifactId>jeecg-p3-biz-xzkx</artifactId>
-			<version>${jeecg-p3-biz-xzkx.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.jeecgframework.p3</groupId>
-					<artifactId>jeecg-p3-start-quick</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.p3framework</groupId> -->
+<!-- 			<artifactId>jeecg-p3-biz-xzkx</artifactId> -->
+<!-- 			<version>${jeecg-p3-biz-xzkx.version}</version> -->
+<!-- 			<exclusions> -->
+<!-- 				<exclusion> -->
+<!-- 					<groupId>org.jeecgframework.p3</groupId> -->
+<!-- 					<artifactId>jeecg-p3-start-quick</artifactId> -->
+<!-- 				</exclusion> -->
+<!-- 			</exclusions> -->
+<!-- 		</dependency> -->
 		
 		<!-- 插件：企业微信-->
 		<dependency>
@@ -728,6 +732,11 @@
 <!-- 				</exclusion> -->
 <!-- 			</exclusions> -->
 <!-- 		</dependency> -->
+		<dependency>
+			<groupId>org.jeecgframework.p3</groupId>
+			<artifactId>jeecg-p3-biz-lhs</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<!-- 考试 -->
 		<dependency>
 			<groupId>org.jeecgframework.p3</groupId>
@@ -737,6 +746,10 @@
 				<exclusion>
 					<groupId>org.jeecgframework.p3</groupId>
 					<artifactId>jeecg-p3-start-quick</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jeecgframework.p3</groupId>
+					<artifactId>jeecg-p3-biz-lhs</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

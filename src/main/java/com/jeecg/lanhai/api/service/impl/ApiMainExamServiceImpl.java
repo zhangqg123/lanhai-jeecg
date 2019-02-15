@@ -21,16 +21,16 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
-import com.jeecg.account.entity.LhSAccountEntity;
-import com.jeecg.account.service.LhSAccountService;
 import com.jeecg.exam.entity.LhExamScoreEntity;
 import com.jeecg.exam.service.LhExamService;
 import com.jeecg.lanhai.activiti.util.WXTemplate;
 import com.jeecg.lanhai.activiti.util.WXTemplateData;
 import com.jeecg.lanhai.api.entity.FormTemplateVO;
 import com.jeecg.lanhai.api.service.ApiMainExamService;
-import com.jeecg.zwzx.entity.WorkUserEntity;
-import com.jeecg.zwzx.service.WorkUserService;
+import com.jeecg.lhs.account.entity.LhSAccountEntity;
+import com.jeecg.lhs.account.service.LhSAccountService;
+import com.jeecg.user.entity.LhSUserEntity;
+import com.jeecg.user.service.LhSUserService;
 
 @Service("apiMainExamService")
 public class ApiMainExamServiceImpl implements ApiMainExamService {
@@ -41,7 +41,7 @@ public class ApiMainExamServiceImpl implements ApiMainExamService {
 	@Autowired
 	private LhSAccountService lhSAccountService;
 	@Autowired
-	private WorkUserService workUserService;
+	private LhSUserService lhSUserService;
 	
 	private ExecutorService executor = Executors.newCachedThreadPool();
 	
@@ -96,13 +96,13 @@ public class ApiMainExamServiceImpl implements ApiMainExamService {
 	
 	private void sendTemplateMessage(LhExamScoreEntity lhExamScore,String appId,String useTime) {
 		String openId=lhExamScore.getOpenId();
-		WorkUserEntity workUser=new WorkUserEntity();
-		workUser.setOpenid(openId);
-		MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
-		List<WorkUserEntity> workUserList = list.getResults();
+		LhSUserEntity lhSUser=new LhSUserEntity();
+		lhSUser.setOpenid(openId);
+		MiniDaoPage<LhSUserEntity> list = lhSUserService.getAll(lhSUser, 1, 10);
+		List<LhSUserEntity> lhSUserList = list.getResults();
 		String parentOpenId=null;
-		if(workUserList.size()>0){
-			parentOpenId = workUserList.get(0).getParent();
+		if(lhSUserList.size()>0){
+			parentOpenId = lhSUserList.get(0).getParent();
 		}
 		String formId = getValidFormId(openId);
 		String parentFormId=null;

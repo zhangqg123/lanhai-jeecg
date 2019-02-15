@@ -14,44 +14,33 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.qcloudsms.SmsMultiSender;
 import com.github.qcloudsms.SmsMultiSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
-import com.jeecg.account.dao.LhSAccountDao;
-import com.jeecg.account.entity.LhSAccountEntity;
-import com.jeecg.account.service.LhSAccountService;
 import com.jeecg.lanhai.api.service.SmsLoginService;
-import com.jeecg.zwzx.dao.WorkBlacklistDao;
-import com.jeecg.zwzx.dao.WorkUserDao;
-import com.jeecg.zwzx.entity.WorkBlacklistEntity;
-import com.jeecg.zwzx.entity.WorkUserEntity;
-import com.jeecg.zwzx.service.WorkUserService;
+import com.jeecg.lhs.account.dao.LhSAccountDao;
+import com.jeecg.lhs.account.entity.LhSAccountEntity;
+import com.jeecg.user.entity.LhSUserEntity;
+import com.jeecg.user.service.LhSUserService;
 
 @Service("smsLoginService")
 public class SmsLoginServiceImpl implements SmsLoginService {
 	@Autowired
-	private WorkUserService workUserService;
+	private LhSUserService lhSUserService;
 	@Resource
 	private LhSAccountDao lhSAccountDao;
-	@Resource
-	private WorkBlacklistDao workBlacklistDao;
 
 	@Override
 	public String sendSms(String appId, String phone, String usertype, String status) {
 		String msg=null;
 		LhSAccountEntity lhSAccount = lhSAccountDao.getByAppId(appId);
-    	WorkBlacklistEntity workBlacklist=new WorkBlacklistEntity();
-    	workBlacklist.setPhone(phone);
-    	MiniDaoPage<WorkBlacklistEntity> blackList = workBlacklistDao.getAll(workBlacklist, 1, 10);
-     	if(blackList.getResults().size()>0){
-     		msg= "blacklist";
-     	}
-    	WorkUserEntity workUser=new WorkUserEntity();
-    	workUser.setPhone(phone);
-    	workUser.setUsertype(usertype);
-		MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
-		List<WorkUserEntity> workUserList = list.getResults();
-		if(workUserList.size()>0){
-			workUser=workUserList.get(0);
+
+    	LhSUserEntity lhSUser=new LhSUserEntity();
+    	lhSUser.setPhone(phone);
+    	lhSUser.setUsertype(usertype);
+		MiniDaoPage<LhSUserEntity> list = lhSUserService.getAll(lhSUser, 1, 10);
+		List<LhSUserEntity> lhSUserList = list.getResults();
+		if(lhSUserList.size()>0){
+			lhSUser=lhSUserList.get(0);
 		}
-		if(status.equals("smsCode")&&workUser.getPassword()!=null){
+		if(status.equals("smsCode")&&lhSUser.getPassword()!=null){
 			msg= "号码已注册";
 		}else{
 			// 短信应用SDK AppID
@@ -61,7 +50,7 @@ public class SmsLoginServiceImpl implements SmsLoginService {
 			String appkey = lhSAccount.getSmsAppkey();
 	
 			// 需要发送短信的手机号码
-			String[] phoneNumbers = {workUser.getPhone()};
+			String[] phoneNumbers = {lhSUser.getPhone()};
 	
 			// 短信模板ID，需要在短信应用中申请
 			int templateId = Integer.valueOf(lhSAccount.getSmsTemplateid()); // NOTE: 这里的模板ID`7839`只是一个示例，真实的模板ID需要在短信控制台中申请
@@ -88,16 +77,16 @@ public class SmsLoginServiceImpl implements SmsLoginService {
 				System.out.println("result:"+result);
 	            if (result.result==0) {
 					if(status.equals("smsCode")){
-		    			workUser.setStatus(1);		// 1,已发送验证码					
+		    			lhSUser.setStatus(1);		// 1,已发送验证码					
 					}
-		    		if(workUser.getId()!=null){
-						workUser.setUserkey(values);
-						workUserService.update(workUser);
+		    		if(lhSUser.getId()!=null){
+						lhSUser.setUserkey(values);
+						lhSUserService.update(lhSUser);
 		    		}else{
-		    			workUser.setUsername(workUser.getPhone());
-		    			workUser.setUserkey(values);
+		    			lhSUser.setUsername(lhSUser.getPhone());
+		    			lhSUser.setUserkey(values);
 		    			
-		    			workUserService.insert(workUser);
+		    			lhSUserService.insert(lhSUser);
 					}
 					msg="success";
 				}else{

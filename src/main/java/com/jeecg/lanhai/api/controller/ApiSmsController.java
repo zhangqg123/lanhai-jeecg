@@ -35,17 +35,13 @@ import com.github.qcloudsms.SmsMultiSenderResult;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
-import com.jeecg.account.entity.LhSAccountEntity;
-import com.jeecg.account.service.LhSAccountService;
 import com.jeecg.lanhai.api.service.SmsLoginService;
-import com.jeecg.zwzx.entity.WorkBlacklistEntity;
-import com.jeecg.zwzx.entity.WorkMenuEntity;
-import com.jeecg.zwzx.entity.WorkUserEntity;
-import com.jeecg.zwzx.service.WorkBlacklistService;
-import com.jeecg.zwzx.service.WorkGuideService;
-import com.jeecg.zwzx.service.WorkUserService;
-import com.jeecg.zwzx.utils.AES128Util;
-import com.jeecg.zwzx.utils.PasswordUtil;
+import com.jeecg.lhs.account.entity.LhSAccountEntity;
+import com.jeecg.lhs.account.service.LhSAccountService;
+import com.jeecg.user.entity.LhSUserEntity;
+import com.jeecg.user.service.LhSUserService;
+import com.jeecg.user.utils.AES128Util;
+import com.jeecg.user.utils.PasswordUtil;
 
 /**
  * CMS API
@@ -59,9 +55,7 @@ public class ApiSmsController extends BaseController {
 	@Autowired
 	private SmsLoginService smsLoginService;
 	@Autowired
-	private WorkUserService workUserService;
-	@Autowired
-	private WorkBlacklistService workBlacklistService;
+	private LhSUserService lhSUserService;
 	@Autowired
 	private LhSAccountService lhSAccountService;
 	
@@ -94,22 +88,22 @@ public class ApiSmsController extends BaseController {
     	String openid=request.getParameter("openId");
     	String xcxId=request.getParameter("xcxId");
     	String usertype=request.getParameter("usertype");
-    	WorkUserEntity workUser=new WorkUserEntity();
+    	LhSUserEntity lhSUser=new LhSUserEntity();
 		try {
 	    	if(phone!=null&&userkey!=null){
-	        	workUser.setPhone(phone);
-	        	workUser.setUserkey(userkey);
-	        	workUser.setUsertype(usertype);
-				MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
-				List<WorkUserEntity> workUserList = list.getResults();
-				if(workUserList.size()>0){
-					workUser=workUserList.get(0);
+	        	lhSUser.setPhone(phone);
+	        	lhSUser.setUserkey(userkey);
+	        	lhSUser.setUsertype(usertype);
+				MiniDaoPage<LhSUserEntity> list = lhSUserService.getAll(lhSUser, 1, 10);
+				List<LhSUserEntity> lhSUserList = list.getResults();
+				if(lhSUserList.size()>0){
+					lhSUser=lhSUserList.get(0);
 					// 2，短信验证码登录
-					workUser.setStatus(2);
-					workUser.setOpenid(openid);
-					workUser.setXcxId(xcxId);
-					workUserService.update(workUser);
-					j.setObj(workUser.getId());
+					lhSUser.setStatus(2);
+					lhSUser.setOpenid(openid);
+					lhSUser.setXcxid(xcxId);
+					lhSUserService.update(lhSUser);
+					j.setObj(lhSUser.getId());
 					Map<String,Object> attributes=new HashMap<String,Object>();
 					attributes.put("status", 2);
 					j.setAttributes(attributes);
@@ -133,19 +127,19 @@ public class ApiSmsController extends BaseController {
     	String userkey=request.getParameter("userkey");
     	String openid=request.getParameter("openId");
     	String usertype=request.getParameter("usertype");
-    	WorkUserEntity workUser=new WorkUserEntity();
+    	LhSUserEntity lhSUser=new LhSUserEntity();
 		try {
 	    	if(phone!=null&&userkey!=null){
-	        	workUser.setPhone(phone);
-	        	workUser.setUserkey(userkey);
-	        	workUser.setUsertype(usertype);
-				MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
-				List<WorkUserEntity> workUserList = list.getResults();
-				if(workUserList.size()>0){
-					workUser=workUserList.get(0);
+	        	lhSUser.setPhone(phone);
+	        	lhSUser.setUserkey(userkey);
+	        	lhSUser.setUsertype(usertype);
+				MiniDaoPage<LhSUserEntity> list = lhSUserService.getAll(lhSUser, 1, 10);
+				List<LhSUserEntity> lhSUserList = list.getResults();
+				if(lhSUserList.size()>0){
+					lhSUser=lhSUserList.get(0);
 					// 2，短信验证码登录
-					workUser.setParent(openid);
-					workUserService.update(workUser);
+					lhSUser.setParent(openid);
+					lhSUserService.update(lhSUser);
 					j.setSuccess(true);
 				}else{
 					j.setSuccess(false);
@@ -161,16 +155,16 @@ public class ApiSmsController extends BaseController {
 	}
 	
 	@RequestMapping(value ="/userRegister", method = RequestMethod.POST)
-	public @ResponseBody AjaxJson userRegister(HttpServletRequest request, @RequestBody WorkUserEntity workUser) {
+	public @ResponseBody AjaxJson userRegister(HttpServletRequest request, @RequestBody LhSUserEntity lhSUser) {
 		AjaxJson j = new AjaxJson();
-		String password = workUser.getPassword();
+		String password = lhSUser.getPassword();
 		try {
-			workUser=workUserService.get(workUser.getId());
+			lhSUser=lhSUserService.get(lhSUser.getId());
 			Map<String,Object> attributes=new HashMap<String,Object>();
-			workUser.setPassword(PasswordUtil.encrypt(workUser.getUsername(), password, PasswordUtil.getStaticSalt()));
-			workUser.setStatus(3);
-			workUserService.update(workUser);
-			j.setObj(workUser.getId());
+			lhSUser.setPassword(PasswordUtil.encrypt(lhSUser.getUsername(), password, PasswordUtil.getStaticSalt()));
+			lhSUser.setStatus(3);
+			lhSUserService.update(lhSUser);
+			j.setObj(lhSUser.getId());
 			attributes.put("status", 3);
 			j.setAttributes(attributes);
 			j.setSuccess(true);
@@ -187,29 +181,29 @@ public class ApiSmsController extends BaseController {
 		
 		AjaxJson j = new AjaxJson();
 		try {
-    		WorkUserEntity workUser=new WorkUserEntity();
+    		LhSUserEntity lhSUser=new LhSUserEntity();
 			String idcard=request.getParameter("idcard");
 			String usertype=request.getParameter("usertype");
-			workUser.setIdcard(idcard);
-			workUser.setUsertype(usertype);
-			MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
-			List<WorkUserEntity> workUserList = list.getResults();
-			if(workUserList.size()>0){
+			lhSUser.setIdcard(idcard);
+			lhSUser.setUsertype(usertype);
+			MiniDaoPage<LhSUserEntity> list = lhSUserService.getAll(lhSUser, 1, 10);
+			List<LhSUserEntity> lhSUserList = list.getResults();
+			if(lhSUserList.size()>0){
 				j.setSuccess(false);
 				j.setMsg("身份证号已注册");
 				return j;
 			}
     		String id = request.getHeader("login-code");
-    		workUser.setId(id);
+    		lhSUser.setId(id);
 			String realname= URLDecoder.decode(request.getParameter("realname"),"utf-8");
 			
-			workUser=workUserService.get(workUser.getId());
-			workUser.setRealname(realname);
-			workUser.setIdcard(idcard);
+			lhSUser=lhSUserService.get(lhSUser.getId());
+			lhSUser.setRealname(realname);
+			lhSUser.setIdcard(idcard);
 			// 4，身份证验证通过
-			workUser.setStatus(4);
-			workUserService.update(workUser);
-			j.setObj(workUser.getId());
+			lhSUser.setStatus(4);
+			lhSUserService.update(lhSUser);
+			j.setObj(lhSUser.getId());
 			Map<String,Object> attributes=new HashMap<String,Object>();
 			attributes.put("status", 4);
 			j.setAttributes(attributes);
@@ -222,25 +216,25 @@ public class ApiSmsController extends BaseController {
 	}
 	
 	@RequestMapping(value= "/login", method = RequestMethod.POST)
-	public @ResponseBody AjaxJson login(HttpServletRequest request, @RequestBody WorkUserEntity workUser) {
+	public @ResponseBody AjaxJson login(HttpServletRequest request, @RequestBody LhSUserEntity lhSUser) {
 		AjaxJson j = new AjaxJson();
-		if(workUser.getUsername()!=null&&workUser.getPassword()!=null){
+		if(lhSUser.getUsername()!=null&&lhSUser.getPassword()!=null){
 			String appId=request.getParameter("xcxId");
 			String encryptPass="";
 			try{
 				LhSAccountEntity lhSAccount = lhSAccountService.getByAppId(appId);
-				encryptPass = AES128Util.decrypt(workUser.getPassword(), lhSAccount.getAesKey() ,lhSAccount.getIvKey());
-				workUser.setPassword(PasswordUtil.encrypt(workUser.getUsername(), encryptPass, PasswordUtil.getStaticSalt()));
+				encryptPass = AES128Util.decrypt(lhSUser.getPassword(), lhSAccount.getAesKey() ,lhSAccount.getIvKey());
+				lhSUser.setPassword(PasswordUtil.encrypt(lhSUser.getUsername(), encryptPass, PasswordUtil.getStaticSalt()));
 
-				MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
-				List<WorkUserEntity> workUserList = list.getResults();
-				if(workUserList.size()==1){
-					System.out.println("workUserList.size:"+workUserList.size()+"个");
-					workUser=workUserList.get(0);
+				MiniDaoPage<LhSUserEntity> list = lhSUserService.getAll(lhSUser, 1, 10);
+				List<LhSUserEntity> lhSUserList = list.getResults();
+				if(lhSUserList.size()==1){
+					System.out.println("lhSUserList.size:"+lhSUserList.size()+"个");
+					lhSUser=lhSUserList.get(0);
 					
 					Map<String,Object> attributes=new HashMap<String,Object>();
-					attributes.put("login_code", workUser.getId());
-					attributes.put("status", workUser.getStatus());
+					attributes.put("login_code", lhSUser.getId());
+					attributes.put("status", lhSUser.getStatus());
 					j.setAttributes(attributes);
 					j.setSuccess(true);
 				}else{
@@ -263,17 +257,17 @@ public class ApiSmsController extends BaseController {
 		if(id!=null&&id!=""){
 			try {
 	    		System.out.println("id:"+id);
-	    		WorkUserEntity workUser=new WorkUserEntity();
-	    		workUser.setId(id);
-				MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
-				List<WorkUserEntity> workUserList = list.getResults();
-				if(workUserList.size()>0){
-		    		System.out.println("workUserList.size():-----"+workUserList.size());
-					workUser=workUserList.get(0);
+	    		LhSUserEntity lhSUser=new LhSUserEntity();
+	    		lhSUser.setId(id);
+				MiniDaoPage<LhSUserEntity> list = lhSUserService.getAll(lhSUser, 1, 10);
+				List<LhSUserEntity> lhSUserList = list.getResults();
+				if(lhSUserList.size()>0){
+		    		System.out.println("lhSUserList.size():-----"+lhSUserList.size());
+					lhSUser=lhSUserList.get(0);
 	//				Map<String,Object> attributes=new HashMap<String,Object>();
-	//				attributes.put("status", workUser.getStatus());
+	//				attributes.put("status", lhSUser.getStatus());
 	//				j.setAttributes(attributes);
-					j.setObj(workUser);
+					j.setObj(lhSUser);
 					j.setSuccess(true);
 				}else{
 					j.setSuccess(false);
@@ -294,16 +288,16 @@ public class ApiSmsController extends BaseController {
 		String openId = request.getParameter("openId");
 		if(openId!=null&&openId!=""){
 			try {
-	    		WorkUserEntity workUser=new WorkUserEntity();
-	    		workUser.setParent(openId);
-				MiniDaoPage<WorkUserEntity> list = workUserService.getAll(workUser, 1, 10);
-				List<WorkUserEntity> workUserList = list.getResults();
-				if(workUserList.size()>0){
-					workUser=workUserList.get(0);
+	    		LhSUserEntity lhSUser=new LhSUserEntity();
+	    		lhSUser.setParent(openId);
+				MiniDaoPage<LhSUserEntity> list = lhSUserService.getAll(lhSUser, 1, 10);
+				List<LhSUserEntity> lhSUserList = list.getResults();
+				if(lhSUserList.size()>0){
+					lhSUser=lhSUserList.get(0);
 	//				Map<String,Object> attributes=new HashMap<String,Object>();
-	//				attributes.put("status", workUser.getStatus());
+	//				attributes.put("status", lhSUser.getStatus());
 	//				j.setAttributes(attributes);
-					j.setObj(workUser);
+					j.setObj(lhSUser);
 					j.setSuccess(true);
 				}else{
 					j.setSuccess(false);
