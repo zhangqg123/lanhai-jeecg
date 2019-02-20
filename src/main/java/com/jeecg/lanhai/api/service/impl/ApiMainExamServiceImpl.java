@@ -100,14 +100,20 @@ public class ApiMainExamServiceImpl implements ApiMainExamService {
 		lhSUser.setOpenid(openId);
 		MiniDaoPage<LhSUserEntity> list = lhSUserService.getAll(lhSUser, 1, 10);
 		List<LhSUserEntity> lhSUserList = list.getResults();
-		String parentOpenId=null;
+		String parentOpenIds=null;
 		if(lhSUserList.size()>0){
-			parentOpenId = lhSUserList.get(0).getParent();
+			parentOpenIds = lhSUserList.get(0).getParent();
 		}
 		String formId = getValidFormId(openId);
-		String parentFormId=null;
-		if(parentOpenId!=null){
-			parentFormId=getValidFormId(parentOpenId);
+//		String parentFormId=null;
+		String[] poids=null;
+		String[] pfids = null;;
+		if(parentOpenIds!=null){
+			poids = parentOpenIds.split(",");
+			pfids=new String[poids.length];
+	    	for(int i=0;i<poids.length;i++){
+				pfids[i]=getValidFormId(poids[i]);
+			}
 		}
 		LhSAccountEntity lhSAccount = lhSAccountService.getByAppId(appId);
 		String secret=lhSAccount.getAppSecret();
@@ -137,18 +143,21 @@ public class ApiMainExamServiceImpl implements ApiMainExamService {
 			// 发送模板消息
 			String resp = HttpClientUtil.post(requestUrl, jsonMsg, null);
 		}
-		if(parentFormId!=null){
-			WXTemplate template = new WXTemplate();
-			template.setTouser(parentOpenId);
-			template.setTemplate_id(templateId);
-			template.setPage("pages/home/myproject");
-			template.setForm_id(parentFormId);
-			template.setData(map);
-			template.setEmphasis_keyword("keyword1.DATA");
-	
-			String jsonMsg = JSONObject.fromObject(template).toString();
-			// 发送模板消息
-			String resp = HttpClientUtil.post(requestUrl, jsonMsg, null);
+		if(poids!=null && pfids!=null && poids.length>0 && pfids.length>0){
+	    	for(int i=0;i<pfids.length;i++){
+			
+				WXTemplate template = new WXTemplate();
+				template.setTouser(poids[i]);
+				template.setTemplate_id(templateId);
+				template.setPage("pages/home/myproject");
+				template.setForm_id(pfids[i]);
+				template.setData(map);
+				template.setEmphasis_keyword("keyword1.DATA");
+		
+				String jsonMsg = JSONObject.fromObject(template).toString();
+				// 发送模板消息
+				String resp = HttpClientUtil.post(requestUrl, jsonMsg, null);
+			}
 			
 		}
 
