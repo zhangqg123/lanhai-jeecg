@@ -36,12 +36,7 @@ import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
 import com.jeecg.lanhai.api.service.SmsLoginService;
-import com.jeecg.lhs.account.entity.LhSAccountEntity;
-import com.jeecg.lhs.account.service.LhSAccountService;
-import com.jeecg.user.entity.LhSUserEntity;
-import com.jeecg.user.service.LhSUserService;
-import com.jeecg.user.utils.AES128Util;
-import com.jeecg.user.utils.PasswordUtil;
+import com.jeecg.lhs.service.LhSUserService;
 
 /**
  * CMS API

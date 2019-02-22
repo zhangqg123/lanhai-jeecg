@@ -27,10 +27,10 @@ import com.jeecg.lanhai.activiti.util.WXTemplate;
 import com.jeecg.lanhai.activiti.util.WXTemplateData;
 import com.jeecg.lanhai.api.entity.FormTemplateVO;
 import com.jeecg.lanhai.api.service.ApiMainExamService;
-import com.jeecg.lhs.account.entity.LhSAccountEntity;
-import com.jeecg.lhs.account.service.LhSAccountService;
-import com.jeecg.user.entity.LhSUserEntity;
-import com.jeecg.user.service.LhSUserService;
+import com.jeecg.lhs.entity.LhSAccountEntity;
+import com.jeecg.lhs.entity.LhSUserEntity;
+import com.jeecg.lhs.service.LhSAccountService;
+import com.jeecg.lhs.service.LhSUserService;
 
 @Service("apiMainExamService")
 public class ApiMainExamServiceImpl implements ApiMainExamService {

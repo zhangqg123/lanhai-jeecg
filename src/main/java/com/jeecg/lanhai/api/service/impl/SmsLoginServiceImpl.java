@@ -15,10 +15,10 @@ import com.github.qcloudsms.SmsMultiSender;
 import com.github.qcloudsms.SmsMultiSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
 import com.jeecg.lanhai.api.service.SmsLoginService;
-import com.jeecg.lhs.account.dao.LhSAccountDao;
-import com.jeecg.lhs.account.entity.LhSAccountEntity;
-import com.jeecg.user.entity.LhSUserEntity;
-import com.jeecg.user.service.LhSUserService;
+import com.jeecg.lhs.dao.LhSAccountDao;
+import com.jeecg.lhs.entity.LhSAccountEntity;
+import com.jeecg.lhs.entity.LhSUserEntity;
+import com.jeecg.lhs.service.LhSUserService;
 
 @Service("smsLoginService")
 public class SmsLoginServiceImpl implements SmsLoginService {
