@@ -84,21 +84,21 @@ public class AuditServiceImpl extends CommonServiceImpl implements AuditServiceI
 	 */
 	public String auditWorkFlowStart(WorkApplyEntity entity){
 		String formId=entity.getFormId();
-		String resCode=entity.getResCode();
-		Map<String,String>params=new HashMap<String, String>();
-		params.put("js_code",entity.getResCode());
-		params.put("grant_type","authorization_code");
-		params.put("appid", appId);
-		params.put("secret", secret);					
-		String result=HttpClientUtil.postParams(jscode2sessionUrl,params);
-		JSONObject json = null;
-		String openId = null;
-		try {
-			json = JSONObject.fromObject(result);
-			openId=(String) json.get("openid");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+//		String resCode=entity.getResCode();
+//		Map<String,String>params=new HashMap<String, String>();
+//		params.put("js_code",entity.getResCode());
+//		params.put("grant_type","authorization_code");
+//		params.put("appid", appId);
+//		params.put("secret", secret);					
+//		String result=HttpClientUtil.postParams(jscode2sessionUrl,params);
+//		JSONObject json = null;
+//		String openId = null;
+//		try {
+//			json = JSONObject.fromObject(result);
+//			openId=(String) json.get("openid");
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
 		WorkApplyEntity workApply = workApplyService.get(entity.getId());
 		if(workApply.getApplyStatus()!=null&&workApply.getApplyStatus()>0){
 			return "already";
@@ -119,8 +119,8 @@ public class AuditServiceImpl extends CommonServiceImpl implements AuditServiceI
 	            String processInstanceId = processInstance.getId();
 	            workApply.setProcessInstanceId(processInstanceId);
 	            workApply.setFormId(formId);
-	            workApply.setResCode(resCode);
-	            workApply.setOpenId(openId);
+//	            workApply.setResCode(resCode);
+	            workApply.setOpenId(entity.getOpenId());
 	            workApplyService.update(workApply);
 	            logger.debug("start process of {key={}, bkey={}, pid={}, variables={}}", new Object[]{"leave", businessKey, processInstanceId, variables});
 	        } finally {

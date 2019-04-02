@@ -105,6 +105,7 @@
 		<jeecg-p3-biz-zwzx.version>1.0.0</jeecg-p3-biz-zwzx.version>
 <!-- 		<jeecg-p3-biz-signin.version>1.0.0</jeecg-p3-biz-signin.version> -->
 		<jeecg-p3-biz-exam.version>1.0.0</jeecg-p3-biz-exam.version>
+		<lh-ds.version>1.0.0</lh-ds.version>
 		
 		<!--maven插件变量-->
 		<tomcat.version>2.2</tomcat.version>
@@ -742,6 +743,22 @@
 			<groupId>org.jeecgframework.p3</groupId>
 			<artifactId>jeecg-p3-biz-exam</artifactId>
 			<version>${jeecg-p3-biz-exam.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jeecgframework.p3</groupId>
+					<artifactId>jeecg-p3-start-quick</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jeecgframework.p3</groupId>
+					<artifactId>jeecg-p3-biz-lhs</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- ds -->
+		<dependency>
+			<groupId>org.jeecgframework.p3</groupId>
+			<artifactId>lh-ds</artifactId>
+			<version>${lh-ds.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.jeecgframework.p3</groupId>

@@ -188,6 +188,7 @@
 						<value>work/</value>
 						<!-- 微信企业号激活 -->
 						<value>weixinCoreController.do?wechat</value>
+						<value>wxapi/message/token.do</value>
 						<value>p3/xzkx/index.do?addRecord</value>
 						<value>p3/xzkx/index.do?recordList</value>
 					    <value>p3/xzkx/xzkxController.do?goPage</value>
