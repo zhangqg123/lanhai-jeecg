@@ -30,7 +30,6 @@ public class SmsLoginServiceImpl implements SmsLoginService {
 	@Override
 	public String sendSms(String appId, String phone, String usertype, String status) {
 		String msg=null;
-		LhSAccountEntity lhSAccount = lhSAccountDao.getByAppId(appId);
 
     	LhSUserEntity lhSUser=new LhSUserEntity();
     	lhSUser.setPhone(phone);
@@ -43,6 +42,7 @@ public class SmsLoginServiceImpl implements SmsLoginService {
 		if(status.equals("smsCode")&&lhSUser.getPassword()!=null){
 			msg= "号码已注册";
 		}else{
+			LhSAccountEntity lhSAccount = lhSAccountDao.getByAppId(appId);
 			// 短信应用SDK AppID
 			int appid = Integer.valueOf(lhSAccount.getSmsAppid()); // 1400开头
 	
