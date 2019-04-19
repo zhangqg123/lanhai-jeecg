@@ -34,6 +34,7 @@ import org.jeecgframework.core.util.SysThemesUtil;
 import org.jeecgframework.core.util.oConvertUtils;
 import org.jeecgframework.web.system.manager.ClientManager;
 import org.jeecgframework.web.system.pojo.base.Client;
+import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.jeecgframework.web.system.pojo.base.TSFunction;
 import org.jeecgframework.web.system.pojo.base.TSPasswordResetkey;
 import org.jeecgframework.web.system.pojo.base.TSRole;
@@ -237,8 +238,10 @@ public class LoginController extends BaseController{
             modelMap.put("userName", user.getUserName().length()>5?user.getUserName().substring(0, 5)+"...":user.getUserName());
             modelMap.put("portrait", user.getPortrait());
             //用户当前登录机构
-            modelMap.put("currentOrgName", clientManager.getClient().getUser().getCurrentDepart().getDepartname());
+            TSDepart currDept = clientManager.getClient().getUser().getCurrentDepart();
+            modelMap.put("currentOrgName", currDept.getDepartname());
 			request.getSession().setAttribute("departId", user.getDepartid());
+			request.getSession().setAttribute("departAddress", currDept.getAddress());
 			request.getSession().setAttribute("loginUserId", user.getId());
 			request.getSession().setAttribute("loginUserName", user.getUserName());
 			request.getSession().setAttribute("rolecodes", rolecodes);
