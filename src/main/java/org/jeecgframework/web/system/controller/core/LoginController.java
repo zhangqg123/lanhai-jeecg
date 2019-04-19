@@ -241,6 +241,7 @@ public class LoginController extends BaseController{
             TSDepart currDept = clientManager.getClient().getUser().getCurrentDepart();
             modelMap.put("currentOrgName", currDept.getDepartname());
 			request.getSession().setAttribute("departId", user.getDepartid());
+			//存放小程序ID
 			request.getSession().setAttribute("departAddress", currDept.getAddress());
 			request.getSession().setAttribute("loginUserId", user.getId());
 			request.getSession().setAttribute("loginUserName", user.getUserName());
