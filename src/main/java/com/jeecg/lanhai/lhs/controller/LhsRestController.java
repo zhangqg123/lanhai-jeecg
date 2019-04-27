@@ -1,5 +1,8 @@
-package com.jeecg.lanhai.api.controller;
+package com.jeecg.lanhai.lhs.controller;
 
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,13 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
-import com.jeecg.lanhai.api.entity.FormTemplateVO;
-import com.jeecg.lanhai.api.service.ApiMainExamService;
+import com.jeecg.lanhai.lhs.entity.FormTemplateVO;
+import com.jeecg.lanhai.lhs.service.ApiMainExamService;
 
 /**
  * CMS API
@@ -30,12 +33,14 @@ import com.jeecg.lanhai.api.service.ApiMainExamService;
  * 
  */
 @Controller
-@RequestMapping("/api/main/exam")
-public class ApiMainExamController extends BaseController {
+@RequestMapping("/lhs/main")
+@Api(value = "主程序rest服务", description = "主程序rest服务接口", tags = "RestMainAPI")
+public class LhsRestController extends BaseController {
 	@Autowired
 	private ApiMainExamService apiMainExamService;
 
-	@RequestMapping("/uploadFormIds")
+	@ApiOperation(value = "上传formid", produces = "application/json", httpMethod = "GET")
+	@RequestMapping(value= "/uploadFormIds",method = RequestMethod.GET)
 	public @ResponseBody AjaxJson uploadFormIds(HttpServletRequest request, HttpServletResponse response) {
 		AjaxJson j = new AjaxJson();
 		String openId = request.getParameter("openId");
@@ -46,29 +51,4 @@ public class ApiMainExamController extends BaseController {
 		return j;
 	}
 	
-	@RequestMapping(value="/subChoose")
-	public @ResponseBody String subChoose(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String param = request.getParameter("param");
-		String openId = request.getParameter("openId");
-		String examId = request.getParameter("examId");
-		String sTime=request.getParameter("startTime");
-		long startTime=Long.valueOf(sTime);
-		long endTime = System.currentTimeMillis();
-		int time=(int) ((endTime-startTime)/1000);
-		String useTime=null;
-		int min=0;
-		int sec=0;
-		if (time>60){
-			min=(int)time/60;
-			sec=time%60;
-			useTime=min+"分"+sec+"秒";
-		}else{
-			sec=time%60;
-			useTime=sec+"秒";
-		}
-		String appId=request.getParameter("xcxId");
-		JSONArray jsonArray =apiMainExamService.reply(param,openId,examId,appId,useTime);
-		return JSONArray.toJSONString(jsonArray);
-	}
-
 }

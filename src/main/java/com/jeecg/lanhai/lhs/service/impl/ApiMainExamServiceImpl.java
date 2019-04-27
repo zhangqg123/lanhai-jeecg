@@ -1,4 +1,4 @@
-package com.jeecg.lanhai.api.service.impl;
+package com.jeecg.lanhai.lhs.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,8 +25,8 @@ import com.jeecg.exam.entity.LhExamScoreEntity;
 import com.jeecg.exam.service.LhExamService;
 import com.jeecg.lanhai.activiti.util.WXTemplate;
 import com.jeecg.lanhai.activiti.util.WXTemplateData;
-import com.jeecg.lanhai.api.entity.FormTemplateVO;
-import com.jeecg.lanhai.api.service.ApiMainExamService;
+import com.jeecg.lanhai.lhs.entity.FormTemplateVO;
+import com.jeecg.lanhai.lhs.service.ApiMainExamService;
 import com.jeecg.lhs.entity.LhSAccountEntity;
 import com.jeecg.lhs.entity.LhSUserEntity;
 import com.jeecg.lhs.service.LhSAccountService;

@@ -1,13 +1,28 @@
 package org.jeecgframework.jwt.web;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jeecgframework.core.util.PasswordUtil;
+import org.jeecgframework.core.util.oConvertUtils;
+import org.jeecgframework.jwt.def.JwtConstants;
+import org.jeecgframework.jwt.model.TokenModel;
 import org.jeecgframework.jwt.service.TokenManager;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
+import org.jeecgframework.minidao.pojo.MiniDaoPage;
+import org.jeecgframework.p3.core.common.utils.AjaxJson;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.jeecgframework.web.system.service.UserService;
 import org.slf4j.Logger;
@@ -18,10 +33,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jeecg.lhs.entity.LhSAccountEntity;
+import com.jeecg.lhs.entity.LhSUserEntity;
+import com.jeecg.lhs.service.LhSAccountService;
+import com.jeecg.lhs.service.LhSUserService;
+import com.jeecg.lhs.utils.AES128Util;
+
 
 /**
  * 获取和删除token的请求地址， 
@@ -39,32 +62,127 @@ public class TokenController {
 	private UserService userService;
 	@Autowired
 	private TokenManager tokenManager;
-
+	@Autowired
+	private LhSUserService lhSUserService;
+	@Autowired
+	private LhSAccountService lhSAccountService;
+	
+//	@ApiOperation(value = "获取TOKEN")
+//	@RequestMapping(method = RequestMethod.POST)
+//	@ResponseBody
+//	public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
+//		logger.info("获取TOKEN[{}]" , username);
+//		// 验证
+//		if (StringUtils.isEmpty(username)) {
+//			return new ResponseEntity("用户账号不能为空!", HttpStatus.NOT_FOUND);
+//		}
+//		// 验证
+//		if (StringUtils.isEmpty(username)) {
+//			return new ResponseEntity("用户密码不能为空!", HttpStatus.NOT_FOUND);
+//		}
+//		Assert.notNull(username, "username can not be empty");
+//		Assert.notNull(password, "password can not be empty");
+//
+//		TSUser user = userService.checkUserExits(username, password);
+//		if (user == null) {
+//			// 提示用户名或密码错误
+//			logger.info("获取TOKEN,户账号密码错误[{}]" , username);
+//			return new ResponseEntity("用户账号密码错误!", HttpStatus.NOT_FOUND);
+//		}
+//		// 生成一个token，保存用户登录状态
+//		String token = tokenManager.createToken(user);
+//		return new ResponseEntity(token, HttpStatus.OK);
+//	}
+	
 	@ApiOperation(value = "获取TOKEN")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
+	public AjaxJson login(@RequestParam String username, @RequestParam String password, @RequestParam String xcxId) {
 		logger.info("获取TOKEN[{}]" , username);
-		// 验证
-		if (StringUtils.isEmpty(username)) {
-			return new ResponseEntity("用户账号不能为空!", HttpStatus.NOT_FOUND);
-		}
-		// 验证
-		if (StringUtils.isEmpty(username)) {
-			return new ResponseEntity("用户密码不能为空!", HttpStatus.NOT_FOUND);
-		}
-		Assert.notNull(username, "username can not be empty");
-		Assert.notNull(password, "password can not be empty");
+		AjaxJson j = new AjaxJson();
 
-		TSUser user = userService.checkUserExits(username, password);
-		if (user == null) {
-			// 提示用户名或密码错误
-			logger.info("获取TOKEN,户账号密码错误[{}]" , username);
-			return new ResponseEntity("用户账号密码错误!", HttpStatus.NOT_FOUND);
+		try{
+			LhSAccountEntity lhSAccount = lhSAccountService.getByAppId(xcxId);
+			String encryptPass = AES128Util.decrypt(password, lhSAccount.getAesKey() ,lhSAccount.getIvKey());
+			String password2=PasswordUtil.encrypt(username, encryptPass, PasswordUtil.getStaticSalt());
+			LhSUserEntity lhSUser = new LhSUserEntity();
+			lhSUser.setUsername(username);
+			lhSUser.setPassword(null);
+			lhSUser.setXcxid(xcxId);
+			MiniDaoPage<LhSUserEntity> list = lhSUserService.getAll(lhSUser, 1, 10);
+			List<LhSUserEntity> lhSUserList = list.getResults();
+			
+			Map<String,Object> attributes=new HashMap<String,Object>();
+			lhSUser=null;
+			if(lhSUserList.size()>0){
+				for(LhSUserEntity user:lhSUserList){
+					if(user.getPassword().equals(password2)){
+						lhSUser=user;
+						break;
+					}
+				}
+				if(lhSUser==null){
+					// 提示用户名或密码错误
+					logger.info("获取TOKEN,户账号密码错误[{}]" , username);
+					attributes.put("register", 1);
+					j.setAttributes(attributes);
+					j.setSuccess(false);
+
+				}
+//					lhSUser=lhSUserList.get(0);
+				String roleCode="";
+				if(lhSUser.getRoleCode()!=null && lhSUser.getRoleCode()!=""){
+					roleCode = lhSUser.getRoleCode();	
+				}else{
+					roleCode="create";
+				}
+				attributes.put("login_code", lhSUser.getId());
+				attributes.put("role_code", roleCode);
+				attributes.put("status", lhSUser.getStatus());
+				attributes.put("register", 2);
+				// 生成一个token，保存用户登录状态
+				String token = tokenManager.createToken2(username);
+				attributes.put("token", token);
+				j.setSuccess(true);
+				j.setAttributes(attributes);
+
+			}else{
+				attributes.put("register", 0);
+				logger.info("获取TOKEN,户账号密码错误[{}]" , username);
+				j.setSuccess(false);
+				j.setAttributes(attributes);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		// 生成一个token，保存用户登录状态
-		String token = tokenManager.createToken(user);
-		return new ResponseEntity(token, HttpStatus.OK);
+		return j;
+
+	}
+	
+	@ApiOperation(value = "验证TOKEN")
+	@RequestMapping(value = "/check",method = RequestMethod.POST)
+	@ResponseBody
+	public AjaxJson check(@RequestParam String token) {
+		logger.info("验证TOKEN[{}]" );
+		AjaxJson j = new AjaxJson();
+		j.setSuccess(false);
+		Claims claims = null;
+		try{
+			if(token!=null){
+				claims = Jwts.parser().setSigningKey(JwtConstants.JWT_SECRET).parseClaimsJws(token).getBody();
+				Object username = claims.getId();
+				if (!oConvertUtils.isEmpty(username)) {
+					TokenModel model = tokenManager.getToken(token,username.toString());
+					if (tokenManager.checkToken(model)) {
+						j.setSuccess(true);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return j;
+
 	}
 
 	@ApiOperation(value = "销毁TOKEN")

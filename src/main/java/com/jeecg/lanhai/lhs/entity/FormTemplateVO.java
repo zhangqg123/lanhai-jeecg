@@ -1,4 +1,4 @@
-package com.jeecg.lanhai.api.entity;
+package com.jeecg.lanhai.lhs.entity;
 
 import java.io.Serializable;
 import java.util.Date;

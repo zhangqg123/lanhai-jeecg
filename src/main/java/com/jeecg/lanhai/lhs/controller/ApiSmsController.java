@@ -1,4 +1,4 @@
-package com.jeecg.lanhai.api.controller;
+package com.jeecg.lanhai.lhs.controller;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -35,7 +35,7 @@ import com.github.qcloudsms.SmsMultiSenderResult;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
-import com.jeecg.lanhai.api.service.SmsLoginService;
+import com.jeecg.lanhai.lhs.service.SmsLoginService;
 import com.jeecg.lhs.service.LhSUserService;
 
 /**

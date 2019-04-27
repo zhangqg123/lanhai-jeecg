@@ -1,4 +1,4 @@
-package com.jeecg.lanhai.api.service.impl;
+package com.jeecg.lanhai.lhs.service.impl;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.qcloudsms.SmsMultiSender;
 import com.github.qcloudsms.SmsMultiSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
-import com.jeecg.lanhai.api.service.SmsLoginService;
+import com.jeecg.lanhai.lhs.service.SmsLoginService;
 import com.jeecg.lhs.dao.LhSAccountDao;
 import com.jeecg.lhs.entity.LhSAccountEntity;
 import com.jeecg.lhs.entity.LhSUserEntity;

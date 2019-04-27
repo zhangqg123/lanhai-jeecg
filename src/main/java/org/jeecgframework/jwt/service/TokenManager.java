@@ -17,6 +17,7 @@ public interface TokenManager {
      * @return 生成的token
      */
     public String createToken(TSUser user);
+    public String createToken2(String username);
 
     /**
      * 检查token是否有效

@@ -1,4 +1,4 @@
-package com.jeecg.lanhai.api.service;
+package com.jeecg.lanhai.lhs.service;
 
 public interface SmsLoginService {
 

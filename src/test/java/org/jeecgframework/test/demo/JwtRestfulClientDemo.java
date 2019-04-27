@@ -12,8 +12,9 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class JwtRestfulClientDemo {
 	
-	public static String getToken(String userName,String password){
-		String url = "http://localhost:8080/jeecg/rest/tokens?username="+userName+"&password="+password;
+	public static String getToken(String userName,String password,String xcxId){
+		String url = "http://localhost:8080/jeecg/rest/tokens?username="+userName+"&password="+password+"&xcxId="+xcxId;
+		System.out.println(" url : "+ url);
 		String token= JwtHttpUtil.httpRequest(url, "POST", null);
 		return token;
 	}
@@ -21,7 +22,7 @@ public class JwtRestfulClientDemo {
 	
 	//获取黑名单列表
 	public static JSONObject getBlackList(String token){
-		String url = "http://localhost:8080/jeecg/rest/tsBlackListController";
+		String url = "http://localhost:8080/jeecg/rest/jeecg/lhSBlacklist";
 		JSONObject resp= JwtHttpUtil.httpRequest(url, "GET", null,token);
 		return resp;
 	}
@@ -58,14 +59,14 @@ public class JwtRestfulClientDemo {
 	
 	
 	public static void main(String[] args) {
-		String token = getToken("interfaceuser","123456");
+		String token = getToken("15699582810","ad9662f9cc0de458707d487c1ee17170","wx8917dfc0cdb6bf7f");
 		System.out.println(" token : "+ token);
-//		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJpbnRlcmZhY2V1c2VyIiwic3ViIjoiaW50ZXJmYWNldXNlciIsImlhdCI6MTU0ODU2MzMzNX0.VpvkFd1OlQ5_Rj1_8Mmao4PmmoW_TaivUQfoACyRXxM";
+//		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJpbnRlcmZhY2V1c2VyIiwic3ViIjoiaW50ZXJmYWNldXNlciIsImlhdCI6MTU1NjEzNjI1M30.01NdtL4p5TocR22oFA5vf9CQSIduMyKq2qOiIUziVDw";
 		
 		//添加黑名单
-//		JSONObject jsonObject=new JSONObject();
-//		jsonObject.put("ip","192.168.1.2");
-//		System.out.println("======添加黑名单======="+createBlackList(token,jsonObject.toJSONString()));
+	//	JSONObject jsonObject=new JSONObject();
+	//	jsonObject.put("ip","192.168.1.211");
+	//	System.out.println("======添加黑名单======="+createBlackList(token,jsonObject.toJSONString()));
 		//更新黑名单
 //		JSONObject jsonObject=new JSONObject();
 //		jsonObject.put("id","402881e75f91017e015f91023f7c0001");
@@ -74,7 +75,7 @@ public class JwtRestfulClientDemo {
 		//删除黑名单
 //		System.out.println("======删除黑名单======="+deleteBlackList(token,"402881e75f91017e015f91023f7c0001"));
 		//查询黑名单
-		System.out.println("======查询黑名单======="+getBlackList(token,"402881e75f94a099015f94afe9700003"));
+//		System.out.println("======查询黑名单======="+getBlackList(token,"402881e75f94a099015f94afe9700003"));
 		//获取黑名单列表
 //		System.out.println("======获取黑名单列表======="+getBlackList(token));
 	}

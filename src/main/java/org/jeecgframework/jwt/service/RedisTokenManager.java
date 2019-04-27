@@ -34,6 +34,14 @@ public class RedisTokenManager implements TokenManager {
         return token;
     }
     
+    public String createToken2(String username) {
+        //使用uuid作为源token
+        String token = Jwts.builder().setId(username).setSubject(username).setIssuedAt(new Date()).signWith(SignatureAlgorithm.HS256, JwtConstants.JWT_SECRET).compact();
+        //存储到redis并设置过期时间
+        stringRedisTemplate.boundValueOps(username).set(token, JwtConstants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
+        return token;
+    }
+    
     public TokenModel getToken(String token,String userid) {
         return new TokenModel(userid, token);
     }

@@ -1,4 +1,4 @@
-package com.jeecg.lanhai.api.controller;
+package com.jeecg.lanhai.lhs.controller;
 
 import java.util.HashMap;
 import java.util.List;

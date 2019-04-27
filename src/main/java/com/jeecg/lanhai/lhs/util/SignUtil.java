@@ -1,4 +1,4 @@
-package com.jeecg.lanhai.api.util;
+package com.jeecg.lanhai.lhs.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
