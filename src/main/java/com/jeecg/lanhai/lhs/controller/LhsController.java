@@ -57,37 +57,40 @@ public class LhsController extends BaseController{
 	@ResponseBody
 	public AjaxJson doAudit(@ModelAttribute LhDsAskEntity lhDsAsk){
 		AjaxJson j = new AjaxJson();
-		String sendType=null;
+//		String sendMessage=null;
 		try {
 			Integer status = lhDsAsk.getAskStatus();
 			if(lhDsAsk.getReply().equals("blacklist")){
 				lhDsAskService.doBlack(lhDsAsk);
 			}else{
 				LhDsAskEntity oldlhAsk = lhDsAskService.get(lhDsAsk.getId());
-				String openId = oldlhAsk.getAskOpenId();
+				
 				if(lhDsAsk.getReply().equals("pass")){
 					if(status==LstConstants.CREATE_ASK){
-						lhDsAsk.setAskStatus(LstConstants.AUDIT_ASK);
-						sendType="提问审核通过";
+						oldlhAsk.setAskStatus(LstConstants.AUDIT_ASK);
+//						sendMessage="提问审核通过";
 					}
 					if(status==LstConstants.ANSWER_ASK){
-						lhDsAsk.setAskStatus(LstConstants.AUDIT_ANSWER);
+						oldlhAsk.setAskStatus(LstConstants.AUDIT_ANSWER);
+//						sendMessage="回答审核通过";
 					}
 				}
 				if(lhDsAsk.getReply().equals("deny")){
 					if(status==LstConstants.CREATE_ASK){
-						lhDsAsk.setAskStatus(LstConstants.ASK_DENY);
-						sendType="提问审核未通过";
+						oldlhAsk.setAskStatus(LstConstants.ASK_DENY);
+//						sendMessage="提问审核未通过";
 					}
 					if(status==LstConstants.ANSWER_ASK){
-						lhDsAsk.setAskStatus(LstConstants.ANSWER_DENY);
+						oldlhAsk.setAskStatus(LstConstants.ANSWER_DENY);
+//						sendMessage="回答审核未通过";
 					}
 				}
 				
-				lhDsAskService.update(lhDsAsk);
+				lhDsAskService.update(oldlhAsk);
 				
 				j.setMsg("编辑成功");
-				lhsService.sendWeChat(openId,xcxId,sendType);
+				lhsService.sendWeChat(oldlhAsk,xcxId);
+
 			}
 		} catch (Exception e) {
 			j.setSuccess(false);

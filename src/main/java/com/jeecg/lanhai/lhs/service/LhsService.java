@@ -10,5 +10,5 @@ public interface LhsService {
 	public void collect(String openId, List<FormTemplateVO> formTemplates);
 	public String getValidFormId(String openId);
 	public JSONArray reply(String param, String openId, String examId, String appId, String useTime);
-	public void sendWeChat(String openId, String xcxId, String sendType);
+	public void sendWeChat(LhDsAskEntity lhAsk, String xcxId);
 }

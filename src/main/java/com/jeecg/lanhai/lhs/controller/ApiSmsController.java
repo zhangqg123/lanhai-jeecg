@@ -36,6 +36,8 @@ import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
 import com.jeecg.lanhai.lhs.service.SmsLoginService;
+import com.jeecg.lhs.entity.LhSBlacklistEntity;
+import com.jeecg.lhs.service.LhSBlacklistService;
 import com.jeecg.lhs.service.LhSUserService;
 
 /**
@@ -51,7 +53,9 @@ public class ApiSmsController extends BaseController {
 	private SmsLoginService smsLoginService;
 	@Autowired
 	private LhSUserService lhSUserService;
-	
+	@Autowired
+	private LhSBlacklistService lhSBlacklistService;
+	  
 	@RequestMapping(value="/smsCode")
 	public @ResponseBody AjaxJson txsms(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		AjaxJson j = new AjaxJson();
@@ -59,10 +63,19 @@ public class ApiSmsController extends BaseController {
     	String usertype=request.getParameter("usertype");
     	String status=request.getParameter("status");
     	if(phone==null){
+    		j.setMsg("空号码");
     		j.setSuccess(false);
     		return j;
     	}
-		String appId=request.getParameter("xcxId");
+    	LhSBlacklistEntity lhSBlacklist=new LhSBlacklistEntity();
+    	lhSBlacklist.setPhone(phone);
+    	MiniDaoPage<LhSBlacklistEntity> list = lhSBlacklistService.getAll(lhSBlacklist, 1, 10);
+		if(list.getResults().size()>0){
+			j.setMsg("此号码已锁定");;
+    		j.setSuccess(false);
+    		return j;
+		}
+    	String appId=request.getParameter("xcxId");
 		String smsResult=smsLoginService.sendSms(appId,phone,usertype,status);
 		if(smsResult.equals("success")){
 			j.setSuccess(true);

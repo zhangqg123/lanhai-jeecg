@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jeecg.ask.utils.LstConstants;
 import com.jeecg.lhs.entity.LhSAccountEntity;
 import com.jeecg.lhs.entity.LhSUserEntity;
 import com.jeecg.lhs.service.LhSAccountService;
@@ -124,30 +125,34 @@ public class TokenController {
 				if(lhSUser==null){
 					// 提示用户名或密码错误
 					logger.info("获取TOKEN,户账号密码错误[{}]" , username);
-					attributes.put("register", 1);
+					attributes.put("register", 1); // 1、用户名或密码错误
 					j.setAttributes(attributes);
 					j.setSuccess(false);
 
 				}
-//					lhSUser=lhSUserList.get(0);
-				String roleCode="";
-				if(lhSUser.getRoleCode()!=null && lhSUser.getRoleCode()!=""){
-					roleCode = lhSUser.getRoleCode();	
+				if(lhSUser.getStatus()==LstConstants.BLACK_LIST){
+					attributes.put("register", 3); // 3、用户名被锁定
+					j.setAttributes(attributes);
+					j.setSuccess(false);
 				}else{
-					roleCode="create";
+					String roleCode="";
+					if(lhSUser.getRoleCode()!=null && lhSUser.getRoleCode()!=""){
+						roleCode = lhSUser.getRoleCode();	
+					}else{
+						roleCode="create";
+					}
+					attributes.put("login_code", lhSUser.getId());
+					attributes.put("role_code", roleCode);
+					attributes.put("status", lhSUser.getStatus());
+					attributes.put("register", 2);// 2、正常用户登录
+					// 生成一个token，保存用户登录状态
+					String token = tokenManager.createToken2(username);
+					attributes.put("token", token);
+					j.setSuccess(true);
+					j.setAttributes(attributes);
 				}
-				attributes.put("login_code", lhSUser.getId());
-				attributes.put("role_code", roleCode);
-				attributes.put("status", lhSUser.getStatus());
-				attributes.put("register", 2);
-				// 生成一个token，保存用户登录状态
-				String token = tokenManager.createToken2(username);
-				attributes.put("token", token);
-				j.setSuccess(true);
-				j.setAttributes(attributes);
-
 			}else{
-				attributes.put("register", 0);
+				attributes.put("register", 0); // 0、用户名没有注册
 				logger.info("获取TOKEN,户账号密码错误[{}]" , username);
 				j.setSuccess(false);
 				j.setAttributes(attributes);

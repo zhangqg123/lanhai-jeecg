@@ -21,8 +21,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.jeecg.ask.entity.AskStatusEntity;
 import com.jeecg.ask.entity.LhDsAskEntity;
 import com.jeecg.ask.service.LhDsAskService;
+import com.jeecg.ask.utils.LstConstants;
 import com.jeecg.exam.entity.LhExamScoreEntity;
 import com.jeecg.exam.service.LhExamService;
 import com.jeecg.lanhai.activiti.util.WXTemplate;
@@ -53,6 +55,7 @@ public class LhsServiceImpl implements LhsService {
 //    private final String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 	private String templateId="weOSnK8qqB532FN31FOn1gKN6Q1e-1OEYJPWhWE4-wY";
 	private String createTemplateId="Ejd0HlZC_fTQIRJjbbuHstZ7VHo0FwWzvJK-YRIxN68";
+	private String auditTemplateId="6_mxEbFQ4q5PktBQ2LcXWTIRdRvepywFbjDXOROgTts";
 	
 	public void collect(String openId, List<FormTemplateVO> formTemplates) {
 	    redisTemplate.opsForList().rightPushAll("mina:openid:" + openId, formTemplates);
@@ -169,49 +172,68 @@ public class LhsServiceImpl implements LhsService {
 	}
 
 	@Override
-	public void sendWeChat(final String openId, final String xcxId ,final String sendType) {
+	public void sendWeChat(final LhDsAskEntity lstAsk, final String xcxId) {
 //		lhDsAskService.insert(lstAsk);
 		executor.execute(new Runnable() {			
 			@Override
 			public void run() {
-			    sendMessage(openId,xcxId,sendType);
+			    sendMessage(lstAsk,xcxId);
 			}
 		});
 		
 	}
 	
-	private void sendMessage(String openId, String xcxId ,String sendType) {
-		LhSUserEntity lhSUser=new LhSUserEntity();
-		lhSUser.setOpenid(openId);
-		String formId = getValidFormId(openId);
-		LhSAccountEntity lhSAccount = lhSAccountService.getByAppId(xcxId);
-		String secret=lhSAccount.getAppSecret();
-		AccessToken accessToken = WechatAccessToken.getAccessToken(xcxId,secret, 0);
-		String token=accessToken.getToken();
-		
-    	Map<String, WXTemplateData> map = new HashMap<String, WXTemplateData>();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
-        String auditDate = sdf.format(new Date());  
-        map.put("keyword1", new WXTemplateData(sendType,"#173177"));
-        map.put("keyword2", new WXTemplateData("项目2","#173177"));
-        map.put("keyword3", new WXTemplateData("项目3","#173177"));
-        map.put("keyword4", new WXTemplateData(auditDate ,"#173177"));
-		String requestUrl = SEND_URL + "?access_token="+token;
-		String resp=null;
-		if(formId!=null){	
-			WXTemplate template = new WXTemplate();
-			template.setTouser(openId);
-			template.setTemplate_id(createTemplateId);
-			template.setPage("pages/home/myproject");
-			template.setForm_id(formId);
-			template.setData(map);
-			template.setEmphasis_keyword("keyword1.DATA");
-	
-			String jsonMsg = JSONObject.fromObject(template).toString();
-			// 发送模板消息
-			resp = HttpClientUtil.post(requestUrl, jsonMsg, null);
+	private void sendMessage(LhDsAskEntity lstAsk, String xcxId) {
+//		LhSUserEntity lhSUser=new LhSUserEntity();
+		Integer status = lstAsk.getAskStatus();
+		String openId=null;
+		if(status==LstConstants.CREATE_ASK || status==LstConstants.AUDIT_ASK || status==LstConstants.ASK_DENY){
+			openId = lstAsk.getAskOpenId();
 		}
-
+		if(lstAsk.getAskStatus()==LstConstants.TRANS_ASK || lstAsk.getAskStatus()==LstConstants.TRANS_ANSWER){
+			openId=lstAsk.getDealOpenId();
+		}
+		if(status==LstConstants.ANSWER_ASK || status==LstConstants.AUDIT_ANSWER || status==LstConstants.ANSWER_DENY){
+			openId = lstAsk.getAnswerOpenId();
+		}
+		String sendMessage=null;
+		List<AskStatusEntity> statusList = LstConstants.getStatusList();
+		for(AskStatusEntity as : statusList){
+			if(as.getId()==status){
+				sendMessage=as.getStatusName();
+			}
+		}
+		
+		if(openId!=null){
+//			lhSUser.setOpenid(openId);
+			String formId = getValidFormId(openId);
+			LhSAccountEntity lhSAccount = lhSAccountService.getByAppId(xcxId);
+			String secret=lhSAccount.getAppSecret();
+			AccessToken accessToken = WechatAccessToken.getAccessToken(xcxId,secret, 0);
+			String token=accessToken.getToken();
+			
+	    	Map<String, WXTemplateData> map = new HashMap<String, WXTemplateData>();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+	        String auditDate = sdf.format(new Date());  
+	        map.put("keyword1", new WXTemplateData(sendMessage,"#173177"));
+	        map.put("keyword2", new WXTemplateData(lstAsk.getAskTitle(),"#173177"));
+	        map.put("keyword3", new WXTemplateData(auditDate,"#173177"));
+			String requestUrl = SEND_URL + "?access_token="+token;
+			String resp=null;
+			if(formId!=null){	
+				WXTemplate template = new WXTemplate();
+				template.setTouser(openId);
+				template.setTemplate_id(auditTemplateId);
+				template.setPage("pages/home/myproject");
+				template.setForm_id(formId);
+				template.setData(map);
+				template.setEmphasis_keyword("keyword1.DATA");
+		
+				String jsonMsg = JSONObject.fromObject(template).toString();
+				// 发送模板消息
+				resp = HttpClientUtil.post(requestUrl, jsonMsg, null);
+			}
+		}
 	}
 	
 }

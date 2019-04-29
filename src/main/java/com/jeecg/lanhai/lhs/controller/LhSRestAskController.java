@@ -38,6 +38,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.jeecg.ask.entity.LhDsAskEntity;
 import com.jeecg.ask.service.LhDsAskService;
 import com.jeecg.ask.utils.ImageUtil;
+import com.jeecg.ask.utils.LstConstants;
 import com.jeecg.lanhai.lhs.service.LhsService;
 import com.jeecg.lhs.entity.LhSBlacklistEntity;
 import com.jeecg.lhs.entity.LhSUserEntity;
@@ -71,7 +72,7 @@ public class LhSRestAskController extends BaseController{
 		    String sDate = simpleDateFormat.format(new Date());  
 			lstAsk.setAskDate(simpleDateFormat.parse(sDate));
 			lhDsAskService.insert(lstAsk);
-			lhsService.sendWeChat(lstAsk.getAskOpenId(),xcxId,"提问创建成功,请等待审核");
+			lhsService.sendWeChat(lstAsk,xcxId);
 			j.setMsg("保存成功");
 		} catch (Exception e) {
 			j.setSuccess(false);
@@ -85,8 +86,23 @@ public class LhSRestAskController extends BaseController{
 	@RequestMapping(value= "/updateAsk", method = RequestMethod.POST)
 	public @ResponseBody AjaxJson updateAsk(HttpServletRequest request, @RequestBody LhDsAskEntity lstAsk) {
 		AjaxJson j = new AjaxJson();
+		String xcxId=request.getParameter("xcxId");
 		try {			
 			lhDsAskService.update(lstAsk);
+			String sendOpenId=null;
+//			String sendMessage=null;
+			if(lstAsk.getAskStatus()==LstConstants.TRANS_ASK||lstAsk.getAskStatus()==LstConstants.TRANS_ANSWER){
+				sendOpenId=lstAsk.getDealOpenId();
+//				sendMessage="翻译视频提交成功";
+			}
+			if(lstAsk.getAskStatus()==LstConstants.ANSWER_ASK){
+				sendOpenId=lstAsk.getAnswerOpenId();
+//				sendMessage="回答视频提交成功，请等待审核";
+			}
+			if(sendOpenId!=null){
+				lhsService.sendWeChat(lstAsk,xcxId);
+			}
+			
 			j.setMsg("保存成功");
 		} catch (Exception e) {
 			j.setSuccess(false);
