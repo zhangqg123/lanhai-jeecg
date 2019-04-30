@@ -37,6 +37,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.jeecg.ask.entity.LhDsAskEntity;
 import com.jeecg.ask.service.LhDsAskService;
+import com.jeecg.ask.utils.DeleteFileUtil;
 import com.jeecg.ask.utils.ImageUtil;
 import com.jeecg.ask.utils.LstConstants;
 import com.jeecg.lanhai.lhs.service.LhsService;
@@ -120,6 +121,7 @@ public class LhSRestAskController extends BaseController{
 		Map<String, Object> attributes = new HashMap<String, Object>();
 		try {
 			String openId = request.getParameter("openId");
+			String existFile = request.getParameter("existFile");
 			//获取所有文件名称  
 	        String basePath = ContextHolderUtils.getRequest().getSession().getServletContext().getRealPath("/");   
 			Iterator<String> it = request.getFileNames();  
@@ -143,14 +145,20 @@ public class LhSRestAskController extends BaseController{
 					file.mkdirs();// 创建文件根目录
 				}
 				String filePathName = filePath+fileName;
+				
 			    String savePath = basePath+filePathName;
 
 			    System.out.println(savePath);
 			    File newFile = new File(savePath);  
 			    //上传的文件写入到指定的文件中  
 			    multifile.transferTo(newFile);  
+			    boolean flag;
+			    if(existFile!=null&existFile!=""){
+				    String deletePath=basePath+filePath+existFile;
+				    flag = DeleteFileUtil.deleteFile(deletePath);
+			    }
 //	    		FileCopyUtils.copy(realFilename.getBytes(), newFile);
-				ImageUtil.zoomImageScale(newFile, savePath,300);
+//				ImageUtil.zoomImageScale(newFile, savePath,300);
 			    attributes.put("url", filePath);
 			    attributes.put("fileKey", fileName);
 			    break;
