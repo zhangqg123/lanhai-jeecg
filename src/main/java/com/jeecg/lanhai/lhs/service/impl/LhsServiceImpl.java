@@ -187,11 +187,15 @@ public class LhsServiceImpl implements LhsService {
 //		LhSUserEntity lhSUser=new LhSUserEntity();
 		Integer status = lstAsk.getAskStatus();
 		String openId=null;
+		String askOpenId=null;
 		if(status==LstConstants.CREATE_ASK || status==LstConstants.AUDIT_ASK || status==LstConstants.ASK_DENY){
 			openId = lstAsk.getAskOpenId();
 		}
 		if(lstAsk.getAskStatus()==LstConstants.TRANS_ASK || lstAsk.getAskStatus()==LstConstants.TRANS_ANSWER){
 			openId=lstAsk.getDealOpenId();
+			if(status==LstConstants.TRANS_ANSWER){
+				askOpenId=lstAsk.getAskOpenId();
+			}
 		}
 		if(status==LstConstants.ANSWER_ASK || status==LstConstants.AUDIT_ANSWER || status==LstConstants.ANSWER_DENY){
 			openId = lstAsk.getAnswerOpenId();
@@ -220,8 +224,8 @@ public class LhsServiceImpl implements LhsService {
 	        map.put("keyword3", new WXTemplateData(auditDate,"#173177"));
 			String requestUrl = SEND_URL + "?access_token="+token;
 			String resp=null;
+			WXTemplate template = new WXTemplate();
 			if(formId!=null){	
-				WXTemplate template = new WXTemplate();
 				template.setTouser(openId);
 				template.setTemplate_id(auditTemplateId);
 				template.setPage("pages/home/myproject");
@@ -233,7 +237,19 @@ public class LhsServiceImpl implements LhsService {
 				// 发送模板消息
 				resp = HttpClientUtil.post(requestUrl, jsonMsg, null);
 			}
+			if(askOpenId!=null){
+				formId = getValidFormId(askOpenId);
+				if(formId!=null){	
+					template.setTouser(askOpenId);
+					template.setForm_id(formId);
+			
+					String jsonMsg = JSONObject.fromObject(template).toString();
+					// 发送模板消息
+					resp = HttpClientUtil.post(requestUrl, jsonMsg, null);
+				}
+			}
 		}
+		
 	}
 	
 }
