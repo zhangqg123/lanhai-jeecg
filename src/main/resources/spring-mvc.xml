@@ -19,11 +19,11 @@
 
 	<!-- ApplicationContext-->
 	<bean class="org.jeecgframework.core.util.ApplicationContextUtil"></bean>
-	<!-- 配置缓存工具类（支持redis\ehcache切换）  
+	<!-- 配置缓存工具类（支持redis\ehcache切换）  -->
 	<bean class="org.jeecgframework.web.system.service.impl.RedisCacheService"/>
-	-->
+	<!-- 
 	<bean class="org.jeecgframework.web.system.service.impl.EhcacheService"/>
-	
+	-->
 	
 	<!-- Swagger支持（暂时注释掉提高平台性能，需要此功能，可以放开注释） -->
 	<context:component-scan base-package="springfox"/>
