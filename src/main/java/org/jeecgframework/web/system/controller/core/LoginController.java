@@ -294,7 +294,7 @@ public class LoginController extends BaseController{
 				return null;
 			}
 			
-           	if(rolecodes!=null&&rolecodes!=""){
+           	if(StringUtils.isNotEmpty(rolecodes)&&rolecodes.contains("xzkx")){
 				if("mhplus".equals(sysTheme.getStyle())){
 					return "forward:/p3/xzkx/index/articleList.do"; 
 				}        		
