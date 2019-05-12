@@ -126,7 +126,8 @@ public class UserServiceImpl extends CommonServiceImpl implements UserService {
 		log.setLogcontent(logcontent);
 		log.setLoglevel(loglevel);
 		log.setOperatetype(operatetype);
-		log.setNote(oConvertUtils.getIp());
+//		log.setNote(oConvertUtils.getIp());
+		log.setNote(IpUtil.getIpAddr(request));
 		log.setBroswer(broswer);
 		log.setOperatetime(DateUtils.gettimestamp());
 //		log.setTSUser(ResourceUtil.getSessionUser());
