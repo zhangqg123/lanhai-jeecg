@@ -55,7 +55,8 @@ public class LhsServiceImpl implements LhsService {
 //    private final String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 	private String templateId="weOSnK8qqB532FN31FOn1gKN6Q1e-1OEYJPWhWE4-wY";
 	private String createTemplateId="Ejd0HlZC_fTQIRJjbbuHstZ7VHo0FwWzvJK-YRIxN68";
-	private String auditTemplateId="6_mxEbFQ4q5PktBQ2LcXWTIRdRvepywFbjDXOROgTts";
+//	private String auditTemplateId="6_mxEbFQ4q5PktBQ2LcXWTIRdRvepywFbjDXOROgTts";
+	private String auditTemplateId="emj2wIvqpHXdLHnNtZc57Ou7D3GkM3p9RoVLoB5b-Ic";
 	
 	public void collect(String openId, List<FormTemplateVO> formTemplates) {
 	    redisTemplate.opsForList().rightPushAll("mina:openid:" + openId, formTemplates);
@@ -227,7 +228,7 @@ public class LhsServiceImpl implements LhsService {
 			WXTemplate template = new WXTemplate();
 			if(formId!=null){	
 				template.setTouser(openId);
-				template.setTemplate_id(auditTemplateId);
+				template.setTemplate_id(lhSAccount.getXcxTemplateid());
 				template.setPage("pages/home/myproject");
 				template.setForm_id(formId);
 				template.setData(map);
