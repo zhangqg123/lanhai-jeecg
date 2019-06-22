@@ -186,6 +186,7 @@
 						<!--restful请求统一不做拦截，采用jwt接口机制验证-->
 						<value>rest/</value>
 						<value>work/</value>
+						<value>weapp/</value>
 						<!-- 微信企业号激活 -->
 						<value>weixinCoreController.do?wechat</value>
 						<value>wxapi/message/token.do</value>

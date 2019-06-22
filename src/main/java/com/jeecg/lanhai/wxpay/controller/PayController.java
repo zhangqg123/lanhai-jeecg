@@ -10,10 +10,13 @@ import com.jeecg.lanhai.wxpay.entity.SignInfo;
 import com.jeecg.lanhai.wxpay.util.*;
 import com.jeecg.lhs.entity.LhSAccountEntity;
 import com.jeecg.lhs.service.LhSAccountService;
+import com.tls.tls_sigature.tls_sigature;
+import com.tls.tls_sigature.tls_sigature.GenTLSSignatureResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jeecgframework.p3.core.common.utils.AjaxJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -35,6 +38,31 @@ public class PayController {
 	
     private static Logger log = Logger.getLogger(PayController.class);
 
+    @RequestMapping(value = "/get_login_info")
+    public @ResponseBody Map<String, Object> get_login_info(String code,HttpServletRequest request, HttpServletResponse response) {
+//    	AjaxJson j = new AjaxJson();
+		int sdkAppID=1400216054;
+		System.out.println("code---:"+code);
+		String openId = getOpenId(code);
+		openId = openId.replace("\"", "").trim();
+
+//		String userID = Utils.genUserIdByRandom();
+		String userID = openId.substring(0,8);
+    	String privStr ="-----BEGIN PRIVATE KEY-----\n"+
+        "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgJ+OyTFCaHDWCEPoO\n"+
+        "OV+Nr3je0JTkgglI4C5ozai1sbuhRANCAASSzqkhZ/NHmzYBfncRZjm3Ki2Sa1IY\n"+
+        "O4IrSc1RZJT+0svuer4XaFf7CGbsPouOdY1dxr8JGaOczR5RPRxj4vHt\n"+
+        "-----END PRIVATE KEY-----";
+		GenTLSSignatureResult result = tls_sigature.genSig(sdkAppID, userID, privStr);
+		System.out.println("userSig---:"+result.urlSig);
+		Map<String,Object> res = new HashMap<String,Object>();
+		res.put("userSig", result.urlSig);
+		res.put("sdkAppID", sdkAppID);
+		res.put("userID", userID);
+//		j.setObj(res);
+		return res;
+    }
+    
     @ResponseBody
     @RequestMapping(value = "/prepay")
     public String prePay(String code, ModelMap model, HttpServletRequest request) {
