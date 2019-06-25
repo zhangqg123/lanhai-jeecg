@@ -27,7 +27,7 @@ public class Util {
     @ResponseBody
     @RequestMapping(value = "get_login_info")
     public GetLoginInfoRsp get_login_info(@ModelAttribute GetLoginInfoReq req){
-        return imMgr.getLoginInfo(req.getCode());
+        return imMgr.getLoginInfo(req.getOpenId());
     }
 
     @ResponseBody

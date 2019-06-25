@@ -34,6 +34,7 @@ public class WebRTCRoom {
     @ResponseBody
     @RequestMapping("get_login_info")
     public GetLoginInfoRsp get_login_info(@RequestBody GetLoginInfoReq req){
+    	System.out.println("get login info 111");
         return webRTCRoomService.getLoginInfo(req.getUserID());
     }
 

@@ -83,9 +83,9 @@ public class IMMgr {
         GetLoginInfoRsp rsp = new GetLoginInfoRsp();
                 
         if(!userID.equals(Config.IM.ADMINISTRATOR)){
-    		String openId = getOpenId(userID);
-    		openId = openId.replace("\"", "").trim();
-    		userID = openId.substring(0,8);
+//    		String openId = getOpenId(userID);
+//    		openId = openId.replace("\"", "").trim();
+    		userID = userID.substring(0,8);
         }
 //        if (userID.length() == 0) {
 //            userID = Utils.genUserIdByRandom();

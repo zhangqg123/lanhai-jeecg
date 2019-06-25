@@ -17,7 +17,7 @@ public class WIMMgr {
 
     public GetLoginInfoRsp getLoginInfo(String userID) {
         GetLoginInfoRsp rsp = new GetLoginInfoRsp();
-
+        System.out.println("get login info 222");
         String pattern = "^[a-zA-Z][a-zA-Z0-9_]{3,23}$";
         if (userID.length() == 0) {
             userID = Utils.genUserIdByRandom();
@@ -26,7 +26,7 @@ public class WIMMgr {
             rsp.setMessage("请求失败，userID含有非法字符或者不符合规范");
             return rsp;
         }
-
+        System.out.println("get login info 333");
         WebRTCSigApi api = new WebRTCSigApi();
         api.setSdkAppid((int) Config.iLive.sdkAppID);
         api.setPrivateKey(Config.iLive.privateKey);
